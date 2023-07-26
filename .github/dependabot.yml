@@ -4,6 +4,10 @@ updates:
     directory: '/'
     schedule:
       interval: 'weekly'
+    # Add assignees
+    assignees:
+      - 'PauloHSOliveira'
+# notifications
 notifications:
   - type: 'pull_request'
     parameters:

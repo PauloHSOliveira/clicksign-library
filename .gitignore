@@ -1,0 +1,31 @@
+# Ignorar arquivos e pastas gerados pelo Node.js
+node_modules/
+dist/
+
+# Ignorar arquivos de configuração local
+.env
+
+# Ignorar arquivos gerados pelo TypeScript
+*.js
+*.js.map
+
+# Ignorar arquivos e pastas de desenvolvimento do VSCode
+.vscode/
+.history/
+
+# Ignorar arquivos de log
+*.log
+
+# Ignorar o arquivo de dependências do TypeScript
+tsconfig.tsbuildinfo
+
+# Ignorar arquivos de backup
+*~
+
+# Ignorar arquivos de configuração do editor
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Adicione quaisquer outros arquivos e pastas que deseja ignorar abaixo desta linha

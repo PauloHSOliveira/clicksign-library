@@ -4,7 +4,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 
 describe('ClickSign API', () => {
-  const accessToken = '47268032-8c09-4551-a51a-2f1796120870';
+  const accessToken = process.env.CLICKSIGN_API_KEY_TEST || '';
   const clickSignAPI = createClickSignAPI({
     accessToken,
     environment: ClickSignEnvironment.Sandbox,
@@ -17,7 +17,6 @@ describe('ClickSign API', () => {
   });
 
   test('getDocuments should return documents', async () => {
-    // Mock da resposta da API com o retorno fornecido
     const mockResponse = {
       documents: [
         {
@@ -53,13 +52,9 @@ describe('ClickSign API', () => {
       },
     };
 
-    // Configuração do mock para a chamada à API
     mock.onGet('/api/v1/documents').reply(200, mockResponse);
 
-    // Teste da função getDocuments
     const documents = await getDocuments(clickSignAPI);
     expect(documents).toEqual(mockResponse);
   });
-
-  // Adicione mais testes aqui para outras funções da API do ClickSign
 });

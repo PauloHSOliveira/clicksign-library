@@ -28,4 +28,5 @@ tsconfig.tsbuildinfo
 *.ipr
 *.iws
 
+.env.local
 # Adicione quaisquer outros arquivos e pastas que deseja ignorar abaixo desta linha

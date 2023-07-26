@@ -1,0 +1,11 @@
+version: 2
+updates:
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+notifications:
+  - type: 'pull_request'
+    parameters:
+      branches:
+        - 'develop'

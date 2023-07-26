@@ -7,9 +7,9 @@ updates:
     # Add assignees
     assignees:
       - 'PauloHSOliveira'
-# notifications
-notifications:
-  - type: 'pull_request'
-    parameters:
-      branches:
-        - 'develop'
+    # notifications for this specific update
+    notifications:
+      - type: 'pull_request'
+        parameters:
+          branches:
+            - 'develop'

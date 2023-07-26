@@ -1,15 +1,17 @@
 version: 2
 updates:
+  # Maintain dependencies for npm
   - package-ecosystem: 'npm'
     directory: '/'
     schedule:
       interval: 'weekly'
-    # Add assignees
+      # Add assignees
     assignees:
       - 'PauloHSOliveira'
-    # notifications for this specific update
-    notifications:
-      - type: 'pull_request'
-        parameters:
-          branches:
-            - 'develop'
+    commit-message:
+      # Prefix all commit messages with "npm: "
+      prefix: 'npm'
+    labels:
+      - 'npm'
+      - 'dependencies'
+    open-pull-requests-limit: 10

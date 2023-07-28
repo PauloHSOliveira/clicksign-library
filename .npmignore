@@ -1,6 +1,10 @@
 # Exclude all source files and build artifacts
 src/
 dist/
+__tests__
+.github
+.vscode
+.node_modules
 rollup.config.js
 tsconfig.json
 setupTests.ts

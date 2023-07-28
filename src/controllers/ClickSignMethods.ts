@@ -1,6 +1,10 @@
 import { AxiosResponse } from 'axios';
 import { ClickSignEnvironment, GetDocumentsApiResponse } from '../../types';
 import { ClickSignAPI } from '../api/ClickSignAPI';
+import {
+  CreateDocumentByTemplateResponse,
+  TemplateDocument,
+} from '../../types/documents';
 
 export class ClickSignMethods {
   private api: ClickSignAPI;
@@ -16,12 +20,25 @@ export class ClickSignMethods {
     return new ClickSignMethods(apiKey, environment);
   }
 
-  async createDocumentByTemplate(): Promise<any> {
+  async createDocumentByTemplate(
+    templateData: TemplateDocument,
+  ): Promise<CreateDocumentByTemplateResponse> {
     try {
-      const response: AxiosResponse = await this.api.getApi().get('/documents');
+      const response: AxiosResponse = await this.api
+        .getApi()
+        .post(`/templates/${templateData.templateKey}/documents`, {
+          document: {
+            path: templateData.path,
+            template: {
+              data: {
+                ...templateData.data,
+              },
+            },
+          },
+        });
       return response.data;
     } catch (error) {
-      throw new Error('Failed to fetch documents from ClickSign API.');
+      throw new Error('Failed to create document on ClickSign API.');
     }
   }
 

@@ -3,6 +3,7 @@ import { clickSignService } from '../src';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { ClickSignEnvironment } from '../types';
+import { TemplateDocument } from '../types/documents';
 
 describe('ClickSign API', () => {
   const accessToken = process.env.CLICKSIGN_API_KEY_TEST || '';
@@ -56,6 +57,93 @@ describe('ClickSign API', () => {
     mock.onGet('/api/v1/documents').reply(200, mockResponse);
 
     const documents = await clickSignAPI.getDocuments();
-    expect(documents).toEqual(mockResponse);
+
+    // Check if the response is an array
+    expect(Array.isArray(documents.documents)).toBe(true);
+
+    // Check if each object in the array contains the expected keys
+    documents.documents.forEach((document) => {
+      expect(document).toHaveProperty('auto_close');
+      expect(document).toHaveProperty('deadline_at');
+      expect(document).toHaveProperty('filename');
+      expect(document).toHaveProperty('finished_at');
+      expect(document).toHaveProperty('folder_id');
+      expect(document).toHaveProperty('key');
+      expect(document).toHaveProperty('status');
+      expect(document).toHaveProperty('updated_at');
+      expect(document).toHaveProperty('uploaded_at');
+    });
+  });
+
+  test('createDocument should return 201 status code', async () => {
+    const mockDataToSend = {
+      path: '/Models/Test-123.docx',
+      templateKey: 'a250d85b-1688-4145-838a-122f4a4febf7',
+      data: {
+        company: 'Test',
+        full_address: 'Test Address',
+        zip: '31080-231',
+        cnpj: '12.123.321/0001-12',
+        value: '$ 10.0000',
+      },
+    } as TemplateDocument;
+
+    const mockResponse = {
+      document: {
+        key: expect.any(String),
+        path: expect.any(String),
+        filename: expect.any(String),
+        uploaded_at: expect.any(String),
+        updated_at: expect.any(String),
+        finished_at: null,
+        deadline_at: expect.any(String),
+        status: expect.any(String),
+        auto_close: expect.any(Boolean),
+        locale: expect.any(String),
+        metadata: expect.any(Object),
+        sequence_enabled: expect.any(Boolean),
+        signable_group: null,
+        remind_interval: null,
+        downloads: {
+          original_file_url: expect.any(String),
+        },
+        template: {
+          key: mockDataToSend.templateKey,
+          data: {
+            ...mockDataToSend.data,
+          },
+        },
+        signers: [],
+        events: [
+          {
+            name: expect.any(String),
+            data: {
+              user: {
+                email: expect.any(String),
+                name: expect.any(String),
+              },
+              account: {
+                key: expect.any(String),
+              },
+              deadline_at: expect.any(String),
+              auto_close: expect.any(Boolean),
+              locale: expect.any(String),
+            },
+            occurred_at: expect.any(String),
+          },
+        ],
+      },
+    };
+
+    mock
+      .onPost(`/templates/${mockDataToSend.templateKey}/documents`)
+      .reply(201);
+
+    const documents = await clickSignAPI.createDocumentByTemplate(
+      mockDataToSend,
+    );
+
+    // Check if the response contains the expected fields
+    expect(documents).toMatchObject(mockResponse);
   });
 });

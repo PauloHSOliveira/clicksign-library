@@ -50,10 +50,22 @@ async function fetchDocuments() {
     console.error('Error fetching documents:', error.message);
   }
 }
-// to-do
+
 async function createDocumentByTemplate() {
   try {
-    const document = await clickSignService.createDocumentByTemplate();
+    const data = {
+      path: '/Models/Test-123.docx',
+      templateKey: 'a250d85b-1688-4145-838a-122f4a4febf7',
+      data: {
+        company: 'Test',
+        full_address: 'Test Address',
+        zip: '31080-231',
+        cnpj: '12.123.321/0001-12',
+        value: '$ 10.0000',
+      },
+    } as TemplateDocument;
+
+    const document = await clickSignService.createDocumentByTemplate(data);
     console.log(document);
   } catch (error) {
     console.error('Error creating document by template:', error.message);

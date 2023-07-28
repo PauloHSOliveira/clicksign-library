@@ -23,3 +23,52 @@ export interface GetDocumentsApiResponse {
   documents: Document[];
   page_infos: PageInfos;
 }
+
+export interface CreateDocumentByTemplateResponse {
+  key: string;
+  path: string;
+  filename: string;
+  uploaded_at: string;
+  updated_at: string;
+  finished_at: string | null;
+  deadline_at: string;
+  status: string;
+  auto_close: boolean;
+  locale: string;
+  metadata: object;
+  sequence_enabled: boolean;
+  signable_group: any;
+  remind_interval: any;
+  downloads: {
+    original_file_url: string;
+  };
+  template: {
+    key: string;
+    data: any;
+  };
+  signers: any[];
+  events: [
+    {
+      name: string;
+      data: {
+        user: {
+          email: string;
+          name: string;
+        };
+        account: {
+          key: string;
+        };
+        deadline_at: string;
+        auto_close: boolean;
+        locale: string;
+      };
+      occurred_at: string;
+    },
+  ];
+}
+
+export type TemplateDocument = {
+  path: string;
+  templateKey: string;
+  data: any;
+};

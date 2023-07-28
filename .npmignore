@@ -1,0 +1,11 @@
+# Exclude all source files and build artifacts
+src/
+dist/
+rollup.config.js
+tsconfig.json
+setupTests.ts
+
+# Include necessary files
+index.js
+index.d.ts
+package.json

@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
-import { ClickSignEnvironment } from '../types';
+import { ClickSignEnvironment } from '../../types';
 
 export class ClickSignAPI {
   private static instance: ClickSignAPI | null = null;

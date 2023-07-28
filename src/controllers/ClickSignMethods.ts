@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios';
-import { ClickSignEnvironment, GetDocumentsApiResponse } from '../types';
+import { ClickSignEnvironment, GetDocumentsApiResponse } from '../../types';
 import { ClickSignAPI } from '../api/ClickSignAPI';
 
 export class ClickSignMethods {

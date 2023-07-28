@@ -1,4 +1,4 @@
-import { ClickSignEnvironment, GetDocumentsApiResponse } from '../types';
+import { ClickSignEnvironment, GetDocumentsApiResponse } from '../../types';
 import { ClickSignMethods } from '../controllers/ClickSignMethods';
 
 export class ClickSignService {

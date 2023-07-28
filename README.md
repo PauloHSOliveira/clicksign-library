@@ -29,7 +29,8 @@ Configuration
 Before using the library, you need to configure the ClickSign API with your access key, and the enviroment:
 
 ```typescript
-import { clickSignService, ClickSignEnvironment } from 'clicksign-library';
+import { clickSignService } from 'clicksign-library';
+import { ClickSignEnvironment } from 'clicksign-library/types';
 
 const accessToken = 'YOUR_CLICKSIGN_ACCESS_KEY';
 const environment = ClickSignEnvironment.Production;

@@ -1,10 +1,10 @@
-import { ClickSignEnvironment } from './types';
 import { ClickSignService } from './services/ClickSignService';
+import { ClickSignEnvironment } from './types';
 
 // Export the public API of your library
-export function createClickSignService(
+export const clickSignService = (
   apiKey: string,
   environment: ClickSignEnvironment,
-): ClickSignService {
-  return new ClickSignService(apiKey, environment);
-}
+) => {
+  return ClickSignService.getInstance(apiKey, environment);
+};

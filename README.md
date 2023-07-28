@@ -20,6 +20,7 @@ npm install clicksign-library --save
 ```
 
 or
+
 ```bash
 yarn add clicksign-library
 ```
@@ -28,50 +29,43 @@ Configuration
 Before using the library, you need to configure the ClickSign API with your access key, and the enviroment:
 
 ```typescript
-import { createClickSignAPI, ClickSignEnvironment } from 'clicksign-library';
+import { clickSignService, ClickSignEnvironment } from 'clicksign-library';
 
 const accessToken = 'YOUR_CLICKSIGN_ACCESS_KEY';
-const clickSignAPI = createClickSignAPI({
-    accessToken,
-    environment: ClickSignEnvironment.Sandbox,
-});
+const environment = ClickSignEnvironment.Production;
+
+const clickSignAPI = clickSignService(accessToken, environment);
 ```
 
 Send Contract
 To send a contract to ClickSign, you can use the sendDocument function:
 
 ```typescript
-import { sendDocument } from 'clicksign-library';
+async function fetchDocuments() {
+  try {
+    const documents = await clickSignService.getDocuments();
+    console.log(documents);
+  } catch (error) {
+    console.error('Error fetching documents:', error.message);
+  }
+}
+// to-do
+async function createDocumentByTemplate() {
+  try {
+    const document = await clickSignService.createDocumentByTemplate();
+    console.log(document);
+  } catch (error) {
+    console.error('Error creating document by template:', error.message);
+  }
+}
 
-// Contract data
-const contractData = {
-  filename: 'contract.pdf',
-  content: 'BASE64_ENCODED_CONTRACT_CONTENT',
-  signers: [
-    {
-      email: 'signer1@example.com',
-      name: 'Signer 1',
-      // Other signer information...
-    },
-    // Add more signers if needed...
-  ],
-};
-
-// Send the contract to ClickSign
-const document = await sendDocument(clickSignAPI, contractData);
-console.log('Contract sent:', document);
+// Call the functions to use the ClickSign service
+fetchDocuments();
+createDocumentByTemplate();
 ```
 
 List Documents
 To retrieve the list of documents in ClickSign, you can use the getDocuments function:
-
-```typescript
-import { getDocuments } from 'clicksign-library';
-
-// Get the list of documents
-const documents = await getDocuments(clickSignAPI);
-console.log('Documents:', documents);
-```
 
 Contribution
 
@@ -90,7 +84,3 @@ Make sure to replace `YOUR_CLICKSIGN_ACCESS_KEY` with your actual ClickSign acce
 Remember to keep the README.md updated with relevant information for the project and its users. A good README is essential for providing clear and friendly documentation and helping users understand how to use the library effectively.
 
 ```
-
-
-
-

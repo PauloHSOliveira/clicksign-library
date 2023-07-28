@@ -1,11 +1,22 @@
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
-import { ClickSignEnvironment, GetDocumentsApiResponse } from '../types';
+import axios, { AxiosInstance } from 'axios';
+import { ClickSignEnvironment } from '../types';
 
 export class ClickSignAPI {
-  private api: AxiosInstance;
+  private static instance: ClickSignAPI | null = null;
+  private api: AxiosInstance | null = null;
 
-  constructor(apiKey: string, environment: ClickSignEnvironment) {
+  private constructor(apiKey: string, environment: ClickSignEnvironment) {
     this.api = this.createAxiosInstance(apiKey, environment);
+  }
+
+  static getInstance(
+    apiKey: string,
+    environment: ClickSignEnvironment,
+  ): ClickSignAPI {
+    if (!ClickSignAPI.instance) {
+      ClickSignAPI.instance = new ClickSignAPI(apiKey, environment);
+    }
+    return ClickSignAPI.instance;
   }
 
   private createAxiosInstance(
@@ -25,24 +36,12 @@ export class ClickSignAPI {
     });
   }
 
-  async createDocumentByTemplate(): Promise<any> {
-    try {
-      const response: AxiosResponse = await this.api.get('/documents');
-      return response.data;
-    } catch (error) {
-      throw new Error('Failed to fetch documents from ClickSign API.');
+  getApi(): AxiosInstance {
+    if (!this.api) {
+      throw new Error(
+        'ClickSign API instance is not set. Call getInstance() before using.',
+      );
     }
+    return this.api;
   }
-
-  async getDocuments(): Promise<GetDocumentsApiResponse> {
-    try {
-      const response: AxiosResponse<GetDocumentsApiResponse> =
-        await this.api.get('/documents');
-      return response.data;
-    } catch (error) {
-      throw new Error('Failed to fetch documents from ClickSign API.');
-    }
-  }
-
-  // Add more methods as needed for other API endpoints.
 }

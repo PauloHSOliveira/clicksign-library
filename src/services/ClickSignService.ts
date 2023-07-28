@@ -1,20 +1,27 @@
 import { ClickSignEnvironment, GetDocumentsApiResponse } from '../types';
-import { ClickSignAPI } from '../api/ClickSignAPI';
+import { ClickSignMethods } from '../controllers/ClickSignMethods';
 
 export class ClickSignService {
-  private clickSignAPI: ClickSignAPI;
+  private api: ClickSignMethods;
 
-  constructor(apiKey: string, environment: ClickSignEnvironment) {
-    this.clickSignAPI = new ClickSignAPI(apiKey, environment);
+  private constructor(apiKey: string, environment: ClickSignEnvironment) {
+    this.api = ClickSignMethods.getInstance(apiKey, environment);
+  }
+
+  static getInstance(
+    apiKey: string,
+    environment: ClickSignEnvironment,
+  ): ClickSignService {
+    return new ClickSignService(apiKey, environment);
   }
 
   async createDocumentByTemplate(): Promise<any> {
-    return this.clickSignAPI.createDocumentByTemplate();
+    return this.api.createDocumentByTemplate();
   }
 
   async getDocuments(): Promise<GetDocumentsApiResponse> {
-    return this.clickSignAPI.getDocuments();
+    return this.api.getDocuments();
   }
 
-  // Add more methods as needed for other service-related functionalities.
+  // Add more service-related functionalities if needed.
 }

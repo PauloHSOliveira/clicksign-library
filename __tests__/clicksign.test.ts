@@ -1,12 +1,12 @@
 // __tests__/clicksign.test.ts
-import { createClickSignService } from '../src';
+import { clickSignService } from '../src';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { ClickSignEnvironment } from '../src/types';
 
 describe('ClickSign API', () => {
   const accessToken = process.env.CLICKSIGN_API_KEY_TEST || '';
-  const clickSignAPI = createClickSignService(
+  const clickSignAPI = clickSignService(
     accessToken,
     ClickSignEnvironment.Sandbox,
   );

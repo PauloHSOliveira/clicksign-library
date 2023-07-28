@@ -1,14 +1,15 @@
 // __tests__/clicksign.test.ts
-import { ClickSignEnvironment, createClickSignAPI, getDocuments } from '../src';
+import { clickSignService } from '../src';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import { ClickSignEnvironment } from '../types';
 
 describe('ClickSign API', () => {
   const accessToken = process.env.CLICKSIGN_API_KEY_TEST || '';
-  const clickSignAPI = createClickSignAPI({
+  const clickSignAPI = clickSignService(
     accessToken,
-    environment: ClickSignEnvironment.Sandbox,
-  });
+    ClickSignEnvironment.Sandbox,
+  );
 
   const mock = new MockAdapter(axios);
 
@@ -54,7 +55,7 @@ describe('ClickSign API', () => {
 
     mock.onGet('/api/v1/documents').reply(200, mockResponse);
 
-    const documents = await getDocuments(clickSignAPI);
+    const documents = await clickSignAPI.getDocuments();
     expect(documents).toEqual(mockResponse);
   });
 });

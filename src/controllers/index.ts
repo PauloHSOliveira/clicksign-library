@@ -1,1 +1,0 @@
-export { getDocuments } from './documents';

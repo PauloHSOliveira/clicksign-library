@@ -52,6 +52,4 @@ export class ClickSignMethods {
       throw new Error('Failed to fetch documents from ClickSign API.');
     }
   }
-
-  // Add more methods as needed for other API endpoints.
 }

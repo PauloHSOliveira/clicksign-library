@@ -1,6 +1,7 @@
 import { ClickSignEnvironment, GetDocumentsApiResponse } from '../../types';
 import {
   CreateDocumentByTemplateResponse,
+  GetDocumentResponse,
   TemplateDocument,
 } from '../../types/documents';
 import { ClickSignMethods } from '../controllers/ClickSignMethods';
@@ -29,5 +30,8 @@ export class ClickSignService {
     return this.api.getDocuments();
   }
 
+  async getDocument(key: string): Promise<GetDocumentResponse> {
+    return this.api.getDocument(key);
+  }
   // Add more service-related functionalities if needed.
 }

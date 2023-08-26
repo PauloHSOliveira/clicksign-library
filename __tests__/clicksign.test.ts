@@ -4,6 +4,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { ClickSignEnvironment } from '../types';
 import { TemplateDocument } from '../types/documents';
+import { isNull } from 'util';
 
 describe('ClickSign API', () => {
   const accessToken = process.env.CLICKSIGN_API_KEY_TEST || '';
@@ -11,6 +12,8 @@ describe('ClickSign API', () => {
     accessToken,
     ClickSignEnvironment.Sandbox,
   );
+
+  let documentKey: string | null;
 
   const mock = new MockAdapter(axios);
 
@@ -139,11 +142,37 @@ describe('ClickSign API', () => {
       .onPost(`/templates/${mockDataToSend.templateKey}/documents`)
       .reply(201);
 
-    const documents = await clickSignAPI.createDocumentByTemplate(
+    const response = await clickSignAPI.createDocumentByTemplate(
       mockDataToSend,
     );
 
+    documentKey = response.document.key;
+
     // Check if the response contains the expected fields
-    expect(documents).toMatchObject(mockResponse);
+    expect(response).toMatchObject(mockResponse);
+  });
+
+  test('getDocument by key should return documents', async () => {
+    const mockResponse = {
+      auto_close: true,
+      deadline_at: '2023-08-24T23:42:08.400-03:00',
+      filename: 'Invoice2jl.pdf',
+      finished_at: null,
+      folder_id: 5785686,
+      key: '1cb239ee-7b50-4dba-aa60-d8adc1e97f65',
+      status: 'draft',
+      updated_at: '2023-07-25T23:42:08.591-03:00',
+      uploaded_at: '2023-07-25T23:42:08.588-03:00',
+    };
+
+    mock.onGet('/api/v1/documents').reply(200, mockResponse);
+
+    if (isNull(documentKey)) return;
+
+    const response = await clickSignAPI.getDocument(documentKey);
+    const document = response.document;
+    // Check if each object in the array contains the expected keys
+
+    console.log({ document });
   });
 });

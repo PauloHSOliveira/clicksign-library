@@ -3,6 +3,7 @@ import { ClickSignEnvironment, GetDocumentsApiResponse } from '../../types';
 import { ClickSignAPI } from '../api/ClickSignAPI';
 import {
   CreateDocumentByTemplateResponse,
+  GetDocumentResponse,
   TemplateDocument,
 } from '../../types/documents';
 
@@ -50,6 +51,18 @@ export class ClickSignMethods {
       return response.data;
     } catch (error) {
       throw new Error('Failed to fetch documents from ClickSign API.');
+    }
+  }
+
+  async getDocument(key: string): Promise<GetDocumentResponse> {
+    try {
+      const response: AxiosResponse<GetDocumentResponse> = await this.api
+        .getApi()
+        .get(`/documents/${key}`);
+
+      return response.data;
+    } catch (error) {
+      throw new Error('Failed to fetch document from ClickSign API.');
     }
   }
 }

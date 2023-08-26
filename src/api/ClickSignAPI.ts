@@ -1,4 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
+import axiosRetry from 'axios-retry';
+import RateLimit from 'axios-rate-limit';
 import { ClickSignEnvironment } from '../../types';
 
 export class ClickSignAPI {
@@ -22,18 +24,31 @@ export class ClickSignAPI {
   private createAxiosInstance(
     apiKey: string,
     environment: ClickSignEnvironment,
+    retry: boolean = false,
   ): AxiosInstance {
     const baseURL =
       environment === ClickSignEnvironment.Production
         ? 'https://api.clicksign.com/api/v1'
         : 'https://sandbox.clicksign.com/api/v1';
 
-    return axios.create({
+    // Criar um AxiosInstance com rate limiting
+    const instance = axios.create({
       baseURL,
       params: {
         access_token: apiKey,
       },
     });
+
+    const rateLimitedInstance = RateLimit(instance, {
+      maxRequests: 10,
+      perMilliseconds: 2000,
+    });
+
+    if (retry) {
+      axiosRetry(rateLimitedInstance, { retries: 3 });
+    }
+
+    return rateLimitedInstance;
   }
 
   getApi(): AxiosInstance {

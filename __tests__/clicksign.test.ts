@@ -154,15 +154,16 @@ describe('ClickSign API', () => {
 
   test('getDocument by key should return documents', async () => {
     const mockResponse = {
+      key: '3d3ec51f-8ef8-4d26-92e9-21f29b9e284f',
+      account_key: 'fcac372b-dd89-40b1-99fd-0d8133d1266c',
+      path: '/Models/Test-123.docx',
+      filename: 'Test-123.docx',
+      uploaded_at: '2023-08-26T23:48:35.640Z',
+      updated_at: '2023-08-26T23:48:35.647Z',
+      deadline_at: '2023-09-25T20:48:35.498-03:00',
+      status: 'running',
       auto_close: true,
-      deadline_at: '2023-08-24T23:42:08.400-03:00',
-      filename: 'Invoice2jl.pdf',
-      finished_at: null,
-      folder_id: 5785686,
-      key: '1cb239ee-7b50-4dba-aa60-d8adc1e97f65',
-      status: 'draft',
-      updated_at: '2023-07-25T23:42:08.591-03:00',
-      uploaded_at: '2023-07-25T23:42:08.588-03:00',
+      locale: 'pt-BR',
     };
 
     mock.onGet('/api/v1/documents').reply(200, mockResponse);
@@ -173,6 +174,15 @@ describe('ClickSign API', () => {
     const document = response.document;
     // Check if each object in the array contains the expected keys
 
-    console.log({ document });
+    expect(document).toHaveProperty('key');
+    expect(document).toHaveProperty('account_key');
+    expect(document).toHaveProperty('path');
+    expect(document).toHaveProperty('filename');
+    expect(document).toHaveProperty('uploaded_at');
+    expect(document).toHaveProperty('updated_at');
+    expect(document).toHaveProperty('deadline_at');
+    expect(document).toHaveProperty('status');
+    expect(document).toHaveProperty('auto_close');
+    expect(document).toHaveProperty('locale');
   });
 });

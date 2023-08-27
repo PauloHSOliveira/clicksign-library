@@ -166,7 +166,7 @@ describe('ClickSign API', () => {
       locale: 'pt-BR',
     };
 
-    mock.onGet('/api/v1/documents').reply(200, mockResponse);
+    mock.onGet('/api/v1/document/key').reply(200, mockResponse);
 
     if (isNull(documentKey)) return;
 
@@ -184,5 +184,21 @@ describe('ClickSign API', () => {
     expect(document).toHaveProperty('status');
     expect(document).toHaveProperty('auto_close');
     expect(document).toHaveProperty('locale');
+  });
+
+  test('cancelDocument by key should return success', async () => {
+    mock.onPatch('/api/v1/document/key/cancel').reply(200);
+
+    if (isNull(documentKey)) return;
+
+    await clickSignAPI.cancelDocument(documentKey);
+  });
+
+  test('deleteDocument by key should return success', async () => {
+    mock.onDelete('/api/v1/document/key/cancel').reply(200);
+
+    if (isNull(documentKey)) return;
+
+    await clickSignAPI.deleteDocument(documentKey);
   });
 });

@@ -65,4 +65,28 @@ export class ClickSignMethods {
       throw new Error('Failed to fetch document from ClickSign API.');
     }
   }
+
+  async cancelDocument(key: string): Promise<any> {
+    try {
+      const response: AxiosResponse<any> = await this.api
+        .getApi()
+        .patch(`/documents/${key}/cancel`);
+
+      return response.data;
+    } catch (error) {
+      throw new Error('Failed to cancel document from ClickSign API.');
+    }
+  }
+
+  async deleteDocument(key: string): Promise<any> {
+    try {
+      const response: AxiosResponse<any> = await this.api
+        .getApi()
+        .delete(`/documents/${key}`);
+
+      return response.data;
+    } catch (error) {
+      throw new Error('Failed to delete document from ClickSign API.');
+    }
+  }
 }

@@ -33,5 +33,13 @@ export class ClickSignService {
   async getDocument(key: string): Promise<GetDocumentResponse> {
     return this.api.getDocument(key);
   }
+
+  async cancelDocument(key: string): Promise<any> {
+    return this.api.cancelDocument(key);
+  }
+
+  async deleteDocument(key: string): Promise<any> {
+    return this.api.deleteDocument(key);
+  }
   // Add more service-related functionalities if needed.
 }

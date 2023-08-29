@@ -11,6 +11,8 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      CLICKSIGN_API_KEY_TEST: ${{ secrets.CLICKSIGN_API_KEY_TEST }}
 
     steps:
       - name: Checkout Repository

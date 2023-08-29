@@ -23,6 +23,7 @@
     "typescript": "^5.1.6"
   },
   "scripts": {
+    "build": "rollup -c",
     "lint": "eslint . --ext .ts",
     "test": "jest",
     "test:watch": "jest --watchAll",

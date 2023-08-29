@@ -4,6 +4,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { ClickSignEnvironment } from '../types';
 import { TemplateDocument } from '../types/documents';
+import { isNull } from 'util';
 
 describe('ClickSign API', () => {
   const accessToken = process.env.CLICKSIGN_API_KEY_TEST || '';
@@ -11,6 +12,8 @@ describe('ClickSign API', () => {
     accessToken,
     ClickSignEnvironment.Sandbox,
   );
+
+  let documentKey: string | null;
 
   const mock = new MockAdapter(axios);
 
@@ -139,11 +142,63 @@ describe('ClickSign API', () => {
       .onPost(`/templates/${mockDataToSend.templateKey}/documents`)
       .reply(201);
 
-    const documents = await clickSignAPI.createDocumentByTemplate(
+    const response = await clickSignAPI.createDocumentByTemplate(
       mockDataToSend,
     );
 
+    documentKey = response.document.key;
+
     // Check if the response contains the expected fields
-    expect(documents).toMatchObject(mockResponse);
+    expect(response).toMatchObject(mockResponse);
+  });
+
+  test('getDocument by key should return documents', async () => {
+    const mockResponse = {
+      key: '3d3ec51f-8ef8-4d26-92e9-21f29b9e284f',
+      account_key: 'fcac372b-dd89-40b1-99fd-0d8133d1266c',
+      path: '/Models/Test-123.docx',
+      filename: 'Test-123.docx',
+      uploaded_at: '2023-08-26T23:48:35.640Z',
+      updated_at: '2023-08-26T23:48:35.647Z',
+      deadline_at: '2023-09-25T20:48:35.498-03:00',
+      status: 'running',
+      auto_close: true,
+      locale: 'pt-BR',
+    };
+
+    mock.onGet('/api/v1/document/key').reply(200, mockResponse);
+
+    if (isNull(documentKey)) return;
+
+    const response = await clickSignAPI.getDocument(documentKey);
+    const document = response.document;
+    // Check if each object in the array contains the expected keys
+
+    expect(document).toHaveProperty('key');
+    expect(document).toHaveProperty('account_key');
+    expect(document).toHaveProperty('path');
+    expect(document).toHaveProperty('filename');
+    expect(document).toHaveProperty('uploaded_at');
+    expect(document).toHaveProperty('updated_at');
+    expect(document).toHaveProperty('deadline_at');
+    expect(document).toHaveProperty('status');
+    expect(document).toHaveProperty('auto_close');
+    expect(document).toHaveProperty('locale');
+  });
+
+  test('cancelDocument by key should return success', async () => {
+    mock.onPatch('/api/v1/document/key/cancel').reply(200);
+
+    if (isNull(documentKey)) return;
+
+    await clickSignAPI.cancelDocument(documentKey);
+  });
+
+  test('deleteDocument by key should return success', async () => {
+    mock.onDelete('/api/v1/document/key/cancel').reply(200);
+
+    if (isNull(documentKey)) return;
+
+    await clickSignAPI.deleteDocument(documentKey);
   });
 });

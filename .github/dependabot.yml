@@ -5,13 +5,12 @@ updates:
     directory: '/'
     schedule:
       interval: 'weekly'
-      # Add assignees
     assignees:
       - 'PauloHSOliveira'
     commit-message:
-      # Prefix all commit messages with "npm: "
-      prefix: 'npm'
+      prefix: '[NPM] Lib update'
     labels:
       - 'npm'
       - 'dependencies'
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 5
+    target-branch: 'develop'

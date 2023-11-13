@@ -8,7 +8,6 @@ import { isNull } from 'lodash';
 
 
 const accessToken = process.env.CLICKSIGN_API_KEY_TEST || '';
-  console.log(accessToken)
   const clickSignAPI = clickSignService(
     accessToken,
     ClickSignEnvironment.Sandbox,

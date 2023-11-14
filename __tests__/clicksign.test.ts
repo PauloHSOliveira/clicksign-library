@@ -4,14 +4,16 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { ClickSignEnvironment } from '../types';
 import { TemplateDocument } from '../types/documents';
-import { isNull } from 'util';
+import { isNull } from 'lodash';
 
-describe('ClickSign API', () => {
-  const accessToken = process.env.CLICKSIGN_API_KEY_TEST || '';
+
+const accessToken = process.env.CLICKSIGN_API_KEY_TEST || '';
   const clickSignAPI = clickSignService(
     accessToken,
     ClickSignEnvironment.Sandbox,
   );
+
+describe('ClickSign API', () => {
 
   let documentKey: string | null;
 
@@ -81,7 +83,7 @@ describe('ClickSign API', () => {
   test('createDocument should return 201 status code', async () => {
     const mockDataToSend = {
       path: '/Models/Test-123.docx',
-      templateKey: 'a250d85b-1688-4145-838a-122f4a4febf7',
+      templateKey: '5ee40cc9-2c36-48a7-9e43-087a90247087',
       data: {
         company: 'Test',
         full_address: 'Test Address',

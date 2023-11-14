@@ -39,6 +39,7 @@ export class ClickSignMethods {
         });
       return response.data;
     } catch (error) {
+      console.log(error)
       throw new Error('Failed to create document on ClickSign API.');
     }
   }

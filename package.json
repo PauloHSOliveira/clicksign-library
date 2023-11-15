@@ -1,6 +1,6 @@
 {
   "name": "clicksign-library",
-  "version": "0.0.8",
+  "version": "0.0.9-beta",
   "description": "This is a Node.js library to facilitate contract sending using the ClickSign REST API. The library is written in TypeScript and uses functional programming to provide an easy-to-use and scalable interface.",
   "main": "src/index.ts",
   "devDependencies": {
@@ -62,6 +62,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/PauloHSOliveira/clicksign-library.git"
+    "url": "git+https://github.com/PauloHSOliveira/clicksign-library.git"
   }
 }

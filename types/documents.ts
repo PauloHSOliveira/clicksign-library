@@ -19,6 +19,15 @@ export interface Document {
   uploaded_at: string;
 }
 
+export interface ConfigDocument {
+  deadline_at?: Date;
+  auto_close?: boolean;
+  locale?: 'pt-BR' | 'en-US';
+  sequence_enabled?: boolean;
+  remind_interval?: 1 | 2 | 3 | 7 | 14;
+  block_after_refusal?: boolean;
+}
+
 export interface GetDocumentsApiResponse {
   documents: Document[];
   page_infos: PageInfos;

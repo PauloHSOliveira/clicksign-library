@@ -2,36 +2,64 @@ import axios, { AxiosInstance } from 'axios';
 import axiosRetry from 'axios-retry';
 import RateLimit from 'axios-rate-limit';
 import { ClickSignEnvironment } from '../../types';
+import { ApiInstanceTypes } from '../../types/apiInstance';
 
 export class ClickSignAPI {
   private static instance: ClickSignAPI | null = null;
   private api: AxiosInstance | null = null;
 
-  private constructor(apiKey: string, environment: ClickSignEnvironment) {
-    this.api = this.createAxiosInstance(apiKey, environment);
+  private constructor({
+    apiKey,
+    environment,
+    maxRequests = 10,
+    perMilliseconds = 2000,
+    retryConfig = { retries: 3 },
+    debug = false,
+  }: ApiInstanceTypes) {
+    this.api = this.createAxiosInstance({
+      apiKey,
+      environment,
+      maxRequests,
+      perMilliseconds,
+      retryConfig,
+      debug,
+    });
   }
 
-  static getInstance(
-    apiKey: string,
-    environment: ClickSignEnvironment,
-  ): ClickSignAPI {
+  static getInstance({
+    apiKey,
+    environment,
+    maxRequests = 10,
+    perMilliseconds = 2000,
+    retryConfig = { retries: 3 },
+    debug = false,
+  }: ApiInstanceTypes): ClickSignAPI {
     if (!ClickSignAPI.instance) {
-      ClickSignAPI.instance = new ClickSignAPI(apiKey, environment);
+      ClickSignAPI.instance = new ClickSignAPI({
+        apiKey,
+        environment,
+        maxRequests,
+        perMilliseconds,
+        retryConfig,
+        debug,
+      });
     }
     return ClickSignAPI.instance;
   }
 
-  private createAxiosInstance(
-    apiKey: string,
-    environment: ClickSignEnvironment,
-    retry: boolean = false,
-  ): AxiosInstance {
+  private createAxiosInstance({
+    apiKey,
+    environment,
+    maxRequests,
+    perMilliseconds,
+    retryConfig,
+    debug = false,
+  }: ApiInstanceTypes): AxiosInstance {
     const baseURL =
       environment === ClickSignEnvironment.Production
         ? 'https://api.clicksign.com/api/v1'
         : 'https://sandbox.clicksign.com/api/v1';
 
-    // Criar um AxiosInstance com rate limiting
     const instance = axios.create({
       baseURL,
       params: {
@@ -40,12 +68,23 @@ export class ClickSignAPI {
     });
 
     const rateLimitedInstance = RateLimit(instance, {
-      maxRequests: 10,
-      perMilliseconds: 2000,
+      maxRequests,
+      perMilliseconds,
     });
 
-    if (retry) {
-      axiosRetry(rateLimitedInstance, { retries: 3 });
+    if (debug) {
+      rateLimitedInstance.interceptors.request.use((config) => {
+        console.log(`Making request to ${config.url}`);
+        return config;
+      });
+    }
+
+    if (retryConfig) {
+      axiosRetry(rateLimitedInstance, retryConfig);
+    }
+
+    if (debug) {
+      console.log('Rate limiting and retry applied.');
     }
 
     return rateLimitedInstance;

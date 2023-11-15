@@ -13,7 +13,7 @@ The library already has the following features implemented:
 
 ### Installation
 
-To use the library in your Node.js project, you can install it via npm or yarn:
+To use the library in your project, you can install it via npm or yarn:
 
 ```bash
 npm install clicksign-library --save
@@ -35,22 +35,20 @@ import { ClickSignEnvironment } from 'clicksign-library/types';
 const accessToken = 'YOUR_CLICKSIGN_ACCESS_KEY';
 const environment = ClickSignEnvironment.Production;
 
-const clickSignAPI = clickSignService(accessToken, environment);
+const clickSignAPI = clickSignService({
+  apiKey: accessToken,
+  environment,
+  debug: false, // optional, default is false
+  maxRequests: 10, // optional, default is 10
+  perMilliseconds: 2000, // optional, default is 2000
+  retryConfig: { retries: 3 }, // optional, default is { retries: 3 }
+});
 ```
 
 Send Contract
 To send a contract to ClickSign, you can use the sendDocument function:
 
 ```typescript
-async function fetchDocuments() {
-  try {
-    const documents = await clickSignService.getDocuments();
-    console.log(documents);
-  } catch (error) {
-    console.error('Error fetching documents:', error.message);
-  }
-}
-
 async function createDocumentByTemplate() {
   try {
     const data = {
@@ -65,7 +63,7 @@ async function createDocumentByTemplate() {
       },
     } as TemplateDocument;
 
-    const document = await clickSignService.createDocumentByTemplate(data);
+    const document = await clickSignService.documents.createDocumentByTemplate(data);
     console.log(document);
   } catch (error) {
     console.error('Error creating document by template:', error.message);
@@ -73,12 +71,45 @@ async function createDocumentByTemplate() {
 }
 
 // Call the functions to use the ClickSign service
-fetchDocuments();
 createDocumentByTemplate();
 ```
 
 List Documents
 To retrieve the list of documents in ClickSign, you can use the getDocuments function:
+
+```typescript
+  const fetchDocuments = async () => {
+    const documents = await clickSignAPI.documents.getDocuments();
+    return documents;
+  }
+```
+
+Get Document by key
+To get a document by key in ClickSign, you can use:
+
+```typescript
+  const fetchDocument = async (documentKey: string) => {
+    const document = await clickSignAPI.documents.getDocument(documentKey);
+  }
+```
+
+Cancel document by key:
+To Cancel a document by key, you can use:
+
+```typescript
+  const cancelDocument = async (documentKey: string) => {
+    await clickSignAPI.documents.cancelDocument(documentKey);
+  }
+```
+
+Delete document by key:
+To Delete a document by key, you can use:
+
+```typescript
+  const deleteDocument = async (documentKey: string) => {
+    await clickSignAPI.documents.deleteDocument(documentKey);
+  }
+```
 
 Contribution
 
@@ -92,7 +123,7 @@ This is a brief guide on how to use the ClickSign library in your Node.js projec
 
 ```css
 
-Make sure to replace `YOUR_CLICKSIGN_ACCESS_KEY` with your actual ClickSign access key in the code. This README.md file provides instructions on how to install, configure, and use the ClickSign library in your Node.js project. It also includes a contribution section and license information to facilitate collaboration from other developers.
+Make sure to replace `YOUR_CLICKSIGN_ACCESS_KEY` with your actual ClickSign access key in the code. This README.md file provides instructions on how to install, configure, and use the ClickSign library in your project. It also includes a contribution section and license information to facilitate collaboration from other developers.
 
 Remember to keep the README.md updated with relevant information for the project and its users. A good README is essential for providing clear and friendly documentation and helping users understand how to use the library effectively.
 

@@ -6,15 +6,17 @@ import { ClickSignEnvironment } from '../types';
 import { TemplateDocument } from '../types/documents';
 import { isNull } from 'lodash';
 
-
 const accessToken = process.env.CLICKSIGN_API_KEY_TEST || '';
-  const clickSignAPI = clickSignService(
-    accessToken,
-    ClickSignEnvironment.Sandbox,
-  );
+const clickSignAPI = clickSignService({
+  apiKey: accessToken,
+  environment: ClickSignEnvironment.Sandbox,
+  debug: true,
+  maxRequests: 20,
+  perMilliseconds: 4000,
+  retryConfig: { retry: 3 },
+});
 
 describe('ClickSign API', () => {
-
   let documentKey: string | null;
 
   const mock = new MockAdapter(axios);
@@ -61,7 +63,7 @@ describe('ClickSign API', () => {
 
     mock.onGet('/api/v1/documents').reply(200, mockResponse);
 
-    const documents = await clickSignAPI.getDocuments();
+    const documents = await clickSignAPI.documents.getDocuments();
 
     // Check if the response is an array
     expect(Array.isArray(documents.documents)).toBe(true);
@@ -144,9 +146,8 @@ describe('ClickSign API', () => {
       .onPost(`/templates/${mockDataToSend.templateKey}/documents`)
       .reply(201);
 
-    const response = await clickSignAPI.createDocumentByTemplate(
-      mockDataToSend,
-    );
+    const response =
+      await clickSignAPI.documents.createDocumentByTemplate(mockDataToSend);
 
     documentKey = response.document.key;
 
@@ -172,7 +173,7 @@ describe('ClickSign API', () => {
 
     if (isNull(documentKey)) return;
 
-    const response = await clickSignAPI.getDocument(documentKey);
+    const response = await clickSignAPI.documents.getDocument(documentKey);
     const document = response.document;
     // Check if each object in the array contains the expected keys
 
@@ -193,7 +194,7 @@ describe('ClickSign API', () => {
 
     if (isNull(documentKey)) return;
 
-    await clickSignAPI.cancelDocument(documentKey);
+    await clickSignAPI.documents.cancelDocument(documentKey);
   });
 
   test('deleteDocument by key should return success', async () => {
@@ -201,6 +202,6 @@ describe('ClickSign API', () => {
 
     if (isNull(documentKey)) return;
 
-    await clickSignAPI.deleteDocument(documentKey);
+    await clickSignAPI.documents.deleteDocument(documentKey);
   });
 });

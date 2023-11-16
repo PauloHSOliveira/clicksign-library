@@ -33,6 +33,23 @@ export interface GetDocumentsApiResponse {
   page_infos: PageInfos;
 }
 
+export type EventType = {
+  name: string;
+  data: {
+    user: {
+      email: string;
+      name: string;
+    };
+    account: {
+      key: string;
+    };
+    deadline_at: string;
+    auto_close: boolean;
+    locale: string;
+  };
+  occurred_at: string;
+}
+
 export interface CreateDocumentByTemplateResponse {
   document: {
     key: string;
@@ -57,26 +74,38 @@ export interface CreateDocumentByTemplateResponse {
       data: any;
     };
     signers: any[];
-    events: [
-      {
-        name: string;
-        data: {
-          user: {
-            email: string;
-            name: string;
-          };
-          account: {
-            key: string;
-          };
-          deadline_at: string;
-          auto_close: boolean;
-          locale: string;
-        };
-        occurred_at: string;
-      },
-    ];
+    events: EventType[];
   };
 }
+
+export type UpdateDocumentResponse = {
+  document: {
+    key: string;
+    path: string;
+    filename: string;
+    uploaded_at: string;
+    updated_at: string;
+    finished_at: string | null;
+    deadline_at: string;
+    status: string;
+    auto_close: boolean;
+    locale: string;
+    metadata: object;
+    sequence_enabled: boolean;
+    remind_interval: any;
+    block_after_refusal: boolean;
+    downloads: {
+      original_file_url: string;
+    };
+    template: {
+      key: string;
+      data: any;
+    };
+    signers: any[];
+    events: EventType[];
+  };
+};
+
 
 export type GetDocumentResponse = {
   document: Document;

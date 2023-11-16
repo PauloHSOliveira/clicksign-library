@@ -3,7 +3,7 @@ import { clickSignService } from '../src';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { ClickSignEnvironment } from '../types';
-import { TemplateDocument } from '../types/documents';
+import { ConfigDocument, TemplateDocument } from '../types/documents';
 import { isNull } from 'lodash';
 
 const accessToken = process.env.CLICKSIGN_API_KEY_TEST || '';
@@ -153,6 +153,75 @@ describe('ClickSign API', () => {
 
     // Check if the response contains the expected fields
     expect(response).toMatchObject(mockResponse);
+  });
+
+  test('configDocument should return 200 status code', async () => {
+    const mockDataToSend = {
+      auto_close: true,
+      block_after_refusal:true,
+      locale:'pt-BR',
+      remind_interval: 14
+    } as ConfigDocument;
+
+    const mockUpdateResponse = {
+      document: {
+        key: expect.any(String),
+        path: expect.any(String),
+        filename: expect.any(String),
+        uploaded_at: expect.any(String),
+        updated_at: expect.any(String),
+        finished_at: null, // Pode ser null ou uma string, dependendo da implementação
+        deadline_at: expect.any(String),
+        status: expect.any(String),
+        auto_close: expect.any(Boolean),
+        locale: expect.any(String),
+        metadata: expect.any(Object),
+        sequence_enabled: expect.any(Boolean),
+        remind_interval: expect.any(Number), // ou qualquer outro tipo dependendo da implementação
+        block_after_refusal: expect.any(Boolean),
+        downloads: {
+          original_file_url: expect.any(String),
+        },
+        template: {
+          key: expect.any(String),
+          data: expect.any(Object),
+        },
+        signers: expect.any(Array),
+        events: expect.arrayContaining([
+          {
+            name: expect.any(String),
+            data: {
+              user: {
+                email: expect.any(String),
+                name: expect.any(String),
+              },
+              account: {
+                key: expect.any(String),
+              },
+              deadline_at: expect.any(String),
+              auto_close: expect.any(Boolean),
+              locale: expect.any(String),
+            },
+            occurred_at: expect.any(String),
+          },
+        ]),
+      },
+    };
+
+
+    mock
+      .onPatch(`/documents/${documentKey}`)
+      .reply(200);
+
+      if (isNull(documentKey)) return;
+
+    const response =
+      await clickSignAPI.documents.configDocument(documentKey, mockDataToSend);
+
+    documentKey = response.document.key;
+
+    // Check if the response contains the expected fields
+    expect(response).toMatchObject(mockUpdateResponse);
   });
 
   test('getDocument by key should return documents', async () => {

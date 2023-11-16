@@ -5,6 +5,7 @@ import {
   GetDocumentResponse,
   GetDocumentsApiResponse,
   TemplateDocument,
+  UpdateDocumentResponse,
 } from '../../types/documents';
 import { AxiosResponse } from 'axios';
 
@@ -43,9 +44,9 @@ export class ClickSignDocuments {
   async configDocument(
     key: string,
     data: ConfigDocument,
-  ): Promise<CreateDocumentByTemplateResponse> {
+  ): Promise<UpdateDocumentResponse> {
     try {
-      const response: AxiosResponse<CreateDocumentByTemplateResponse> =
+      const response: AxiosResponse<UpdateDocumentResponse> =
         await this.api.getApi().patch(`/documents/${key}`, data);
       return response.data;
     } catch (error) {

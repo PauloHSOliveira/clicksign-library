@@ -1,7 +1,8 @@
 import { ClickSignAPI } from '../api/ClickSignAPI';
 import {
   ConfigDocument,
-  CreateDocumentByTemplateResponse,
+  CreateDocumentResponse,
+  CreateDocumentByUpload,
   GetDocumentResponse,
   GetDocumentsApiResponse,
   TemplateDocument,
@@ -18,9 +19,9 @@ export class ClickSignDocuments {
 
   async createDocumentByTemplate(
     templateData: TemplateDocument,
-  ): Promise<CreateDocumentByTemplateResponse> {
+  ): Promise<CreateDocumentResponse> {
     try {
-      const response: AxiosResponse<CreateDocumentByTemplateResponse> =
+      const response: AxiosResponse<CreateDocumentResponse> =
         await this.api
           .getApi()
           .post(`/templates/${templateData.templateKey}/documents`, {
@@ -41,13 +42,27 @@ export class ClickSignDocuments {
     }
   }
 
+  async createDocumentByUpload(data: CreateDocumentByUpload): Promise<CreateDocumentResponse> {
+    try {
+      const response: AxiosResponse<CreateDocumentResponse> = await this.api.getApi().post('/documents', {
+        document: data
+      })
+      return response.data
+    } catch (error) {
+      throw new Error(
+        `Failed to upload document on ClickSign API.\n${error as any}`,
+      );
+    }
+  }
+
   async configDocument(
     key: string,
     data: ConfigDocument,
   ): Promise<UpdateDocumentResponse> {
     try {
-      const response: AxiosResponse<UpdateDocumentResponse> =
-        await this.api.getApi().patch(`/documents/${key}`, data);
+      const response: AxiosResponse<UpdateDocumentResponse> = await this.api
+        .getApi()
+        .patch(`/documents/${key}`, data);
       return response.data;
     } catch (error) {
       throw new Error(

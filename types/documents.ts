@@ -48,9 +48,14 @@ export type EventType = {
     locale: string;
   };
   occurred_at: string;
+};
+
+export type TemplateType = {
+  key: string;
+  data: any;
 }
 
-export interface CreateDocumentByTemplateResponse {
+export interface CreateDocumentResponse {
   document: {
     key: string;
     path: string;
@@ -69,16 +74,13 @@ export interface CreateDocumentByTemplateResponse {
     downloads: {
       original_file_url: string;
     };
-    template: {
-      key: string;
-      data: any;
-    };
+    template: TemplateType | null;
     signers: any[];
     events: EventType[];
   };
 }
 
-export type UpdateDocumentResponse = {
+export interface UpdateDocumentResponse {
   document: {
     key: string;
     path: string;
@@ -97,15 +99,11 @@ export type UpdateDocumentResponse = {
     downloads: {
       original_file_url: string;
     };
-    template: {
-      key: string;
-      data: any;
-    };
+    template: TemplateType | null;
     signers: any[];
     events: EventType[];
   };
-};
-
+}
 
 export type GetDocumentResponse = {
   document: Document;
@@ -116,3 +114,13 @@ export type TemplateDocument = {
   templateKey: string;
   data: any;
 };
+
+export interface CreateDocumentByUpload {
+  path: string;
+  content_base64: string;
+  deadline_at?: Date;
+  auto_close?: boolean;
+  locale?: 'pt-BR' | 'en-US';
+  sequence_enabled?: boolean;
+  block_after_refusal?: boolean;
+}

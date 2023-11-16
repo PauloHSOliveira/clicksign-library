@@ -3,8 +3,10 @@ import { clickSignService } from '../src';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { ClickSignEnvironment } from '../types';
-import { ConfigDocument, TemplateDocument } from '../types/documents';
+import { ConfigDocument, CreateDocumentByUpload, TemplateDocument } from '../types/documents';
 import { isNull } from 'lodash';
+
+const docBase64 = process.env.DOC_BASE_64 || ''
 
 const accessToken = process.env.CLICKSIGN_API_KEY_TEST || '';
 const clickSignAPI = clickSignService({
@@ -16,7 +18,7 @@ const clickSignAPI = clickSignService({
   retryConfig: { retry: 3 },
 });
 
-describe('ClickSign API', () => {
+describe('ClickSign API - Documents', () => {
   let documentKey: string | null;
 
   const mock = new MockAdapter(axios);
@@ -155,12 +157,70 @@ describe('ClickSign API', () => {
     expect(response).toMatchObject(mockResponse);
   });
 
+  test('createDocument by upload should return 201 status code', async () => {
+    const mockDataToSend = {
+      path: '/Upload/Test-123.docx',
+      content_base64: docBase64
+    } as CreateDocumentByUpload;
+
+    const mockResponse = {
+      document: {
+        key: expect.any(String),
+        path: expect.any(String),
+        filename: expect.any(String),
+        uploaded_at: expect.any(String),
+        updated_at: expect.any(String),
+        finished_at: null,
+        deadline_at: expect.any(String),
+        status: expect.any(String),
+        auto_close: expect.any(Boolean),
+        locale: expect.any(String),
+        metadata: expect.any(Object),
+        sequence_enabled: expect.any(Boolean),
+        signable_group: null,
+        remind_interval: null,
+        downloads: {
+          original_file_url: expect.any(String),
+        },
+        template: null,
+        signers: [],
+        events: [
+          {
+            name: expect.any(String),
+            data: {
+              user: {
+                email: expect.any(String),
+                name: expect.any(String),
+              },
+              account: {
+                key: expect.any(String),
+              },
+              deadline_at: expect.any(String),
+              auto_close: expect.any(Boolean),
+              locale: expect.any(String),
+            },
+            occurred_at: expect.any(String),
+          },
+        ],
+      },
+    };
+
+    mock
+      .onPost(`/documents`)
+      .reply(201);
+
+    const response =
+      await clickSignAPI.documents.createDocumentByUpload(mockDataToSend);
+    // Check if the response contains the expected fields
+    expect(response).toMatchObject(mockResponse);
+  });
+
   test('configDocument should return 200 status code', async () => {
     const mockDataToSend = {
       auto_close: true,
-      block_after_refusal:true,
-      locale:'pt-BR',
-      remind_interval: 14
+      block_after_refusal: true,
+      locale: 'pt-BR',
+      remind_interval: 14,
     } as ConfigDocument;
 
     const mockUpdateResponse = {
@@ -170,14 +230,14 @@ describe('ClickSign API', () => {
         filename: expect.any(String),
         uploaded_at: expect.any(String),
         updated_at: expect.any(String),
-        finished_at: null, // Pode ser null ou uma string, dependendo da implementação
+        finished_at: null,
         deadline_at: expect.any(String),
         status: expect.any(String),
         auto_close: expect.any(Boolean),
         locale: expect.any(String),
         metadata: expect.any(Object),
         sequence_enabled: expect.any(Boolean),
-        remind_interval: expect.any(Number), // ou qualquer outro tipo dependendo da implementação
+        remind_interval: expect.any(Number),
         block_after_refusal: expect.any(Boolean),
         downloads: {
           original_file_url: expect.any(String),
@@ -208,15 +268,14 @@ describe('ClickSign API', () => {
       },
     };
 
+    mock.onPatch(`/documents/${documentKey}`).reply(200);
 
-    mock
-      .onPatch(`/documents/${documentKey}`)
-      .reply(200);
+    if (isNull(documentKey)) return;
 
-      if (isNull(documentKey)) return;
-
-    const response =
-      await clickSignAPI.documents.configDocument(documentKey, mockDataToSend);
+    const response = await clickSignAPI.documents.configDocument(
+      documentKey,
+      mockDataToSend,
+    );
 
     documentKey = response.document.key;
 

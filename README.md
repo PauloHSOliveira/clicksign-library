@@ -71,6 +71,31 @@ async function createDocumentByTemplate() {
 }
 ```
 
+Create Document by Upload
+To create a document by upload on ClickSign, you can use this function:
+
+```typescript
+async function createDocumentByUpload() {
+  try {
+    const data = {
+      path: "/document.pdf",
+      content_base64: 'base64 file' ,
+      deadline_at: "2020-01-05T14:30:59-03:00", // optional
+      auto_close: true, // optional - default true
+      remind_interval: 14, // optional - default 3
+      locale: "pt-BR", // optional - default pt-BR
+      sequence_enabled: false, // optional - default fase
+      block_after_refusal: true // optional - default true
+    } as CreateDocumentByUpload;
+
+    const document = await clickSignService.documents.createDocumentByUpload(data);
+    console.log(document);
+  } catch (error) {
+    console.error('Error creating document by template:', error.message);
+  }
+}
+```
+
 List Documents
 To retrieve the list of documents in ClickSign, you can use the getDocuments function:
 

@@ -123,4 +123,5 @@ export interface CreateDocumentByUpload {
   locale?: 'pt-BR' | 'en-US';
   sequence_enabled?: boolean;
   block_after_refusal?: boolean;
+  remind_interval?: 1 | 2 | 3 | 7 | 14;
 }

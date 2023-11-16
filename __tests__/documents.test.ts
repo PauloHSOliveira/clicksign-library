@@ -3,18 +3,22 @@ import { clickSignService } from '../src';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { ClickSignEnvironment } from '../types';
-import { TemplateDocument } from '../types/documents';
+import { ConfigDocument, CreateDocumentByUpload, TemplateDocument } from '../types/documents';
 import { isNull } from 'lodash';
 
+const docBase64 = process.env.DOC_BASE_64 || ''
 
 const accessToken = process.env.CLICKSIGN_API_KEY_TEST || '';
-  const clickSignAPI = clickSignService(
-    accessToken,
-    ClickSignEnvironment.Sandbox,
-  );
+const clickSignAPI = clickSignService({
+  apiKey: accessToken,
+  environment: ClickSignEnvironment.Sandbox,
+  debug: true,
+  maxRequests: 20,
+  perMilliseconds: 4000,
+  retryConfig: { retry: 3 },
+});
 
-describe('ClickSign API', () => {
-
+describe('ClickSign API - Documents', () => {
   let documentKey: string | null;
 
   const mock = new MockAdapter(axios);
@@ -61,7 +65,7 @@ describe('ClickSign API', () => {
 
     mock.onGet('/api/v1/documents').reply(200, mockResponse);
 
-    const documents = await clickSignAPI.getDocuments();
+    const documents = await clickSignAPI.documents.getDocuments();
 
     // Check if the response is an array
     expect(Array.isArray(documents.documents)).toBe(true);
@@ -144,14 +148,139 @@ describe('ClickSign API', () => {
       .onPost(`/templates/${mockDataToSend.templateKey}/documents`)
       .reply(201);
 
-    const response = await clickSignAPI.createDocumentByTemplate(
+    const response =
+      await clickSignAPI.documents.createDocumentByTemplate(mockDataToSend);
+
+    documentKey = response.document.key;
+
+    // Check if the response contains the expected fields
+    expect(response).toMatchObject(mockResponse);
+  });
+
+  test('createDocument by upload should return 201 status code', async () => {
+    const mockDataToSend = {
+      path: '/Upload/Test-123.docx',
+      content_base64: docBase64
+    } as CreateDocumentByUpload;
+
+    const mockResponse = {
+      document: {
+        key: expect.any(String),
+        path: expect.any(String),
+        filename: expect.any(String),
+        uploaded_at: expect.any(String),
+        updated_at: expect.any(String),
+        finished_at: null,
+        deadline_at: expect.any(String),
+        status: expect.any(String),
+        auto_close: expect.any(Boolean),
+        locale: expect.any(String),
+        metadata: expect.any(Object),
+        sequence_enabled: expect.any(Boolean),
+        signable_group: null,
+        remind_interval: null,
+        downloads: {
+          original_file_url: expect.any(String),
+        },
+        template: null,
+        signers: [],
+        events: [
+          {
+            name: expect.any(String),
+            data: {
+              user: {
+                email: expect.any(String),
+                name: expect.any(String),
+              },
+              account: {
+                key: expect.any(String),
+              },
+              deadline_at: expect.any(String),
+              auto_close: expect.any(Boolean),
+              locale: expect.any(String),
+            },
+            occurred_at: expect.any(String),
+          },
+        ],
+      },
+    };
+
+    mock
+      .onPost(`/documents`)
+      .reply(201);
+
+    const response =
+      await clickSignAPI.documents.createDocumentByUpload(mockDataToSend);
+    // Check if the response contains the expected fields
+    expect(response).toMatchObject(mockResponse);
+  });
+
+  test('configDocument should return 200 status code', async () => {
+    const mockDataToSend = {
+      auto_close: true,
+      block_after_refusal: true,
+      locale: 'pt-BR',
+      remind_interval: 14,
+    } as ConfigDocument;
+
+    const mockUpdateResponse = {
+      document: {
+        key: expect.any(String),
+        path: expect.any(String),
+        filename: expect.any(String),
+        uploaded_at: expect.any(String),
+        updated_at: expect.any(String),
+        finished_at: null,
+        deadline_at: expect.any(String),
+        status: expect.any(String),
+        auto_close: expect.any(Boolean),
+        locale: expect.any(String),
+        metadata: expect.any(Object),
+        sequence_enabled: expect.any(Boolean),
+        remind_interval: expect.any(Number),
+        block_after_refusal: expect.any(Boolean),
+        downloads: {
+          original_file_url: expect.any(String),
+        },
+        template: {
+          key: expect.any(String),
+          data: expect.any(Object),
+        },
+        signers: expect.any(Array),
+        events: expect.arrayContaining([
+          {
+            name: expect.any(String),
+            data: {
+              user: {
+                email: expect.any(String),
+                name: expect.any(String),
+              },
+              account: {
+                key: expect.any(String),
+              },
+              deadline_at: expect.any(String),
+              auto_close: expect.any(Boolean),
+              locale: expect.any(String),
+            },
+            occurred_at: expect.any(String),
+          },
+        ]),
+      },
+    };
+
+    mock.onPatch(`/documents/${documentKey}`).reply(200);
+
+    if (isNull(documentKey)) return;
+
+    const response = await clickSignAPI.documents.configDocument(
+      documentKey,
       mockDataToSend,
     );
 
     documentKey = response.document.key;
 
     // Check if the response contains the expected fields
-    expect(response).toMatchObject(mockResponse);
+    expect(response).toMatchObject(mockUpdateResponse);
   });
 
   test('getDocument by key should return documents', async () => {
@@ -172,7 +301,7 @@ describe('ClickSign API', () => {
 
     if (isNull(documentKey)) return;
 
-    const response = await clickSignAPI.getDocument(documentKey);
+    const response = await clickSignAPI.documents.getDocument(documentKey);
     const document = response.document;
     // Check if each object in the array contains the expected keys
 
@@ -193,7 +322,7 @@ describe('ClickSign API', () => {
 
     if (isNull(documentKey)) return;
 
-    await clickSignAPI.cancelDocument(documentKey);
+    await clickSignAPI.documents.cancelDocument(documentKey);
   });
 
   test('deleteDocument by key should return success', async () => {
@@ -201,6 +330,6 @@ describe('ClickSign API', () => {
 
     if (isNull(documentKey)) return;
 
-    await clickSignAPI.deleteDocument(documentKey);
+    await clickSignAPI.documents.deleteDocument(documentKey);
   });
 });

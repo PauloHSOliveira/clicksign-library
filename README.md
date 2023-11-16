@@ -45,8 +45,8 @@ const clickSignAPI = clickSignService({
 });
 ```
 
-Send Contract
-To send a contract to ClickSign, you can use the sendDocument function:
+Create Document by Template
+To create a document by template on ClickSign, you can use this function:
 
 ```typescript
 async function createDocumentByTemplate() {
@@ -69,9 +69,6 @@ async function createDocumentByTemplate() {
     console.error('Error creating document by template:', error.message);
   }
 }
-
-// Call the functions to use the ClickSign service
-createDocumentByTemplate();
 ```
 
 List Documents

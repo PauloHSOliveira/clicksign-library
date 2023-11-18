@@ -8,8 +8,8 @@ import {
   Document,
   GetDocumentsApiResponse,
   PageInfos,
-} from '../types';
-import { ApiInstanceTypes } from '../types/apiInstance';
+} from './types';
+import { ApiInstanceTypes } from './types/apiInstance';
 
 const clickSignService = ({
   apiKey,

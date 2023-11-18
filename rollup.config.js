@@ -1,6 +1,7 @@
-// rollup.config.js
 import typescript from '@rollup/plugin-typescript';
 import { terser } from 'rollup-plugin-terser';
+import commonjs from '@rollup/plugin-commonjs';
+import nodeResolve from '@rollup/plugin-node-resolve';
 
 export default {
   input: 'src/index.ts',
@@ -27,8 +28,11 @@ export default {
       sourcemap: true,
       plugins: [terser()],
     },
-    // You can add more output formats as needed (e.g., UMD, etc.)
   ],
-  plugins: [typescript()],
-  external: ['ajv', 'axios'], // Add 'ajv' and 'axios' to the external dependencies
+  plugins: [
+    typescript(),
+    commonjs(),
+    nodeResolve(),
+  ],
+  external: ['axios-rate-limit', 'axios','axios-retry'],
 };

@@ -2,11 +2,15 @@
 import { clickSignService } from '../src';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { ClickSignEnvironment } from '../types';
-import { ConfigDocument, CreateDocumentByUpload, TemplateDocument } from '../types/documents';
+import { ClickSignEnvironment } from '../src/types';
+import {
+  ConfigDocument,
+  CreateDocumentByUpload,
+  TemplateDocument,
+} from '../src/types/documents';
 import { isNull } from 'lodash';
 
-const docBase64 = process.env.DOC_BASE_64 || ''
+const docBase64 = process.env.DOC_BASE_64 || '';
 
 const accessToken = process.env.CLICKSIGN_API_KEY_TEST || '';
 const clickSignAPI = clickSignService({
@@ -160,7 +164,7 @@ describe('ClickSign API - Documents', () => {
   test('createDocument by upload should return 201 status code', async () => {
     const mockDataToSend = {
       path: '/Upload/Test-123.docx',
-      content_base64: docBase64
+      content_base64: docBase64,
     } as CreateDocumentByUpload;
 
     const mockResponse = {
@@ -205,9 +209,7 @@ describe('ClickSign API - Documents', () => {
       },
     };
 
-    mock
-      .onPost(`/documents`)
-      .reply(201);
+    mock.onPost(`/documents`).reply(201);
 
     const response =
       await clickSignAPI.documents.createDocumentByUpload(mockDataToSend);

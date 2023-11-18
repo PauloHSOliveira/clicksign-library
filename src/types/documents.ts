@@ -53,7 +53,7 @@ export type EventType = {
 export type TemplateType = {
   key: string;
   data: any;
-}
+};
 
 export interface CreateDocumentResponse {
   document: {
@@ -106,7 +106,7 @@ export interface UpdateDocumentResponse {
 }
 
 export type GetDocumentResponse = {
-  document: Document;
+  document: DetailedDocument;
 };
 
 export type TemplateDocument = {
@@ -124,4 +124,42 @@ export interface CreateDocumentByUpload {
   sequence_enabled?: boolean;
   block_after_refusal?: boolean;
   remind_interval?: 1 | 2 | 3 | 7 | 14;
+}
+
+export interface DetailedDocument {
+  key: string;
+  path: string;
+  filename: string;
+  uploaded_at: string;
+  updated_at: string;
+  finished_at: string | null;
+  deadline_at: string;
+  status: string;
+  auto_close: boolean;
+  locale: string;
+  metadata: Record<string, any>;
+  sequence_enabled: boolean;
+  signable_group: any;
+  remind_interval: any;
+  block_after_refusal: boolean;
+  downloads: {
+    original_file_url: string;
+  };
+  template: TemplateType | null;
+  signers: SignerDoc[];
+  events: EventType[];
+}
+export interface SignerDoc {
+  key: string;
+  list_key: string;
+  request_signature_key: string;
+  email: string;
+  name: string;
+  has_documentation: boolean;
+  documentation: string;
+  birthday: string;
+  sign_as: string;
+  url: string;
+  auths: string[];
+  created_at: string;
 }

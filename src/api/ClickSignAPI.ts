@@ -1,12 +1,48 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosError, AxiosInstance } from 'axios';
 import axiosRetry from 'axios-retry';
 import RateLimit from 'axios-rate-limit';
-import { ClickSignEnvironment } from '../../types';
-import { ApiInstanceTypes } from '../../types/apiInstance';
+import { ClickSignEnvironment } from '../types';
+import { ApiInstanceTypes } from '../types/apiInstance';
+import { isArray } from 'lodash';
 
+type ErrorResponse = {
+  code?: number;
+  errors?: string | string[];
+};
+
+class ClickSignError extends Error {
+  code: number;
+  message: string;
+
+  constructor(code: number, message: string) {
+    super(`ClickSign API Error (Code: ${code}): ${message}`);
+    this.code = code;
+    this.message = message;
+  }
+}
 export class ClickSignAPI {
   private static instance: ClickSignAPI | null = null;
   private api: AxiosInstance | null = null;
+
+  public handleErrorResponse(error: AxiosError): never {
+    if (axios.isAxiosError(error)) {
+      const responseData = error.response?.data as ErrorResponse;
+      const errorStatus = error.response?.status;
+      if (responseData && responseData.errors) {
+        const errorCode = errorStatus || 500;
+        let errorMessage = '';
+
+        if (isArray(responseData.errors)) {
+          errorMessage = responseData.errors.join(', ');
+        } else {
+          errorMessage = responseData.errors as string;
+        }
+
+        throw new ClickSignError(errorCode, errorMessage);
+      }
+    }
+    throw error;
+  }
 
   private constructor({
     apiKey,
@@ -82,6 +118,13 @@ export class ClickSignAPI {
     if (retryConfig) {
       axiosRetry(rateLimitedInstance, retryConfig);
     }
+
+    rateLimitedInstance.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        this.handleErrorResponse(error);
+      },
+    );
 
     if (debug) {
       console.log('Rate limiting and retry applied.');

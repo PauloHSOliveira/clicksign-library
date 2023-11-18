@@ -7,8 +7,8 @@ import {
   GetDocumentsApiResponse,
   TemplateDocument,
   UpdateDocumentResponse,
-} from '../../types/documents';
-import { AxiosResponse } from 'axios';
+} from '../types/documents';
+import { AxiosError, AxiosResponse } from 'axios';
 
 export class ClickSignDocuments {
   private api: ClickSignAPI;
@@ -21,37 +21,36 @@ export class ClickSignDocuments {
     templateData: TemplateDocument,
   ): Promise<CreateDocumentResponse> {
     try {
-      const response: AxiosResponse<CreateDocumentResponse> =
-        await this.api
-          .getApi()
-          .post(`/templates/${templateData.templateKey}/documents`, {
-            document: {
-              path: templateData.path,
-              template: {
-                data: {
-                  ...templateData.data,
-                },
+      const response: AxiosResponse<CreateDocumentResponse> = await this.api
+        .getApi()
+        .post(`/templates/${templateData.templateKey}/documents`, {
+          document: {
+            path: templateData.path,
+            template: {
+              data: {
+                ...templateData.data,
               },
             },
-          });
+          },
+        });
       return response.data;
     } catch (error) {
-      throw new Error(
-        `Failed to create document on ClickSign API.\n${error as any}`,
-      );
+      this.api.handleErrorResponse(error as AxiosError);
     }
   }
 
-  async createDocumentByUpload(data: CreateDocumentByUpload): Promise<CreateDocumentResponse> {
+  async createDocumentByUpload(
+    data: CreateDocumentByUpload,
+  ): Promise<CreateDocumentResponse> {
     try {
-      const response: AxiosResponse<CreateDocumentResponse> = await this.api.getApi().post('/documents', {
-        document: data
-      })
-      return response.data
+      const response: AxiosResponse<CreateDocumentResponse> = await this.api
+        .getApi()
+        .post('/documents', {
+          document: data,
+        });
+      return response.data;
     } catch (error) {
-      throw new Error(
-        `Failed to upload document on ClickSign API.\n${error as any}`,
-      );
+      this.api.handleErrorResponse(error as AxiosError);
     }
   }
 
@@ -65,9 +64,7 @@ export class ClickSignDocuments {
         .patch(`/documents/${key}`, data);
       return response.data;
     } catch (error) {
-      throw new Error(
-        `Failed to config document on ClickSign API.\n${error as any}`,
-      );
+      this.api.handleErrorResponse(error as AxiosError);
     }
   }
 
@@ -78,7 +75,7 @@ export class ClickSignDocuments {
         .get('/documents');
       return response.data;
     } catch (error) {
-      throw new Error('Failed to fetch documents from ClickSign API.');
+      this.api.handleErrorResponse(error as AxiosError);
     }
   }
 
@@ -90,7 +87,7 @@ export class ClickSignDocuments {
 
       return response.data;
     } catch (error) {
-      throw new Error('Failed to fetch document from ClickSign API.');
+      this.api.handleErrorResponse(error as AxiosError);
     }
   }
 
@@ -102,7 +99,7 @@ export class ClickSignDocuments {
 
       return response.data;
     } catch (error) {
-      throw new Error('Failed to cancel document from ClickSign API.');
+      this.api.handleErrorResponse(error as AxiosError);
     }
   }
 
@@ -114,7 +111,7 @@ export class ClickSignDocuments {
 
       return response.data;
     } catch (error) {
-      throw new Error('Failed to delete document from ClickSign API.');
+      this.api.handleErrorResponse(error as AxiosError);
     }
   }
 }

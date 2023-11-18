@@ -2,8 +2,12 @@
   "name": "clicksign-library",
   "version": "0.0.9-beta",
   "description": "This is a Node.js library to facilitate contract sending using the ClickSign REST API. The library is written in TypeScript and uses functional programming to provide an easy-to-use and scalable interface.",
-  "main": "src/index.ts",
+  "main": "dist/bundle.cjs.js",
+  "types": "dist/bundle.esm.d.ts",
+  "private": true,
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-typescript": "^11.1.2",
     "@types/jest": "^29.5.3",
     "@types/lodash": "^4.14.201",
@@ -31,21 +35,30 @@
     "format": "prettier --write \"**/*.{ts,json}\"",
     "start": "nodemon --exec ts-node src/index.ts"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "clicksign",
+    "docusign",
+    "docs",
+    "react",
+    "typescript",
+    "node",
+    "angular",
+    "vue",
+    "js",
+    "framework js",
+    "javascript",
+    "typescript",
+    "clicksign-library"
+  ],
+  "author": "PauloHSOliveira",
   "license": "MIT",
   "dependencies": {
     "ajv": "^8.12.0",
     "axios": "^1.5.0",
     "axios-rate-limit": "^1.3.0",
     "axios-retry": "^3.6.1",
+    "date-fns": "^2.30.0",
     "lodash": "^4.17.21"
-  },
-  "peerDependencies": {
-    "ajv": "^8.12.0",
-    "axios": "^1.5.0",
-    "axios-rate-limit": "^1.3.0",
-    "axios-retry": "^3.6.1"
   },
   "jest": {
     "preset": "ts-jest",

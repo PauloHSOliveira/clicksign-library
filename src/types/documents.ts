@@ -53,7 +53,7 @@ export type EventType = {
 export type TemplateType = {
   key: string;
   data: any;
-}
+};
 
 export interface CreateDocumentResponse {
   document: {

@@ -43,7 +43,7 @@ const clickSignAPI = clickSignService({
 
 describe('ClickSign API - Signers', () => {
   let signerKey: string | null;
-  let documentKey: string | null
+  let documentKey: string | null;
 
   const mock = new MockAdapter(axios);
 
@@ -128,7 +128,7 @@ describe('ClickSign API - Signers', () => {
   test('addSignerInDocument should return 201', async () => {
     const { documents } = await clickSignAPI.documents.getDocuments();
 
-    const document = documents[0]
+    const document = documents.filter((doc) => doc.status !== 'canceled')[0];
 
     if (isNull(signerKey)) return;
 
@@ -162,7 +162,7 @@ describe('ClickSign API - Signers', () => {
 
     expect(response).toMatchObject({ list: mockResponse.list });
 
-    documentKey = document.key
+    documentKey = document.key;
   });
 
   test('removeSignerOfDocument should return 200', async () => {
@@ -170,6 +170,10 @@ describe('ClickSign API - Signers', () => {
 
     if (isNull(documentKey)) return;
 
-    await clickSignAPI.documents.cancelDocument(documentKey);
+    const { document } = await clickSignAPI.documents.getDocument(documentKey);
+
+    await clickSignAPI.signers.removeSignerOfDocument(
+      document.signers[0].list_key,
+    );
   });
 });

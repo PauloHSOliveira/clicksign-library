@@ -25,7 +25,8 @@ or
 yarn add clicksign-library
 ```
 
-Configuration
+#### Configuration
+
 Before using the library, you need to configure the ClickSign API with your access key, and the enviroment:
 
 ```typescript
@@ -44,8 +45,10 @@ const clickSignAPI = clickSignService({
   retryConfig: { retries: 3 }, // optional, default is { retries: 3 }
 });
 ```
+### Documents
 
-Create Document by Template
+#### Create Document by Template
+
 To create a document by template on ClickSign, you can use this function:
 
 ```typescript
@@ -71,7 +74,8 @@ async function createDocumentByTemplate() {
 }
 ```
 
-Create Document by Upload
+#### Create Document by Upload
+
 To create a document by upload on ClickSign, you can use this function:
 
 ```typescript
@@ -96,7 +100,7 @@ async function createDocumentByUpload() {
 }
 ```
 
-List Documents
+#### List Documents
 To retrieve the list of documents in ClickSign, you can use the getDocuments function:
 
 ```typescript
@@ -106,7 +110,7 @@ To retrieve the list of documents in ClickSign, you can use the getDocuments fun
   }
 ```
 
-Get Document by key
+#### Get Document by key
 To get a document by key in ClickSign, you can use:
 
 ```typescript
@@ -115,7 +119,7 @@ To get a document by key in ClickSign, you can use:
   }
 ```
 
-Cancel document by key:
+#### Cancel document by key:
 To Cancel a document by key, you can use:
 
 ```typescript
@@ -124,7 +128,7 @@ To Cancel a document by key, you can use:
   }
 ```
 
-Delete document by key:
+#### Delete document by key:
 To Delete a document by key, you can use:
 
 ```typescript
@@ -133,7 +137,88 @@ To Delete a document by key, you can use:
   }
 ```
 
-Contribution
+### Signers
+
+#### Create Signer
+
+Creates a new signer in ClickSign.
+
+```typescript
+  const createNewSigner = async () => {
+     const data: CreateSigner = {
+      auths: ['email'],
+      email: 'test@example.com',
+      name: 'Test User',
+      documentation: '', // cpf number
+      birthday: new Date('11/11/1998'),
+      phone_number: '11988667788',
+    };
+
+    await clickSignAPI.signers.createSigner(data);
+  }
+```
+
+#### Get a Signer
+
+Get a signer in ClickSign.
+
+```typescript
+  const getASigner = async () => {
+    const signerKey = 'key'
+    const signerData = await clickSignAPI.signers.getSigner(signerKey);
+    console.log({ signerData })
+  }
+```
+
+#### Add a Signer in Document
+
+Get a signer in ClickSign.
+
+```typescript
+  const addAginerInDoc = async () => {
+    const data: AddSignerInDocument = {
+      document_key: document.key,
+      signer_key: signerKey,
+      sign_as: 'sign',
+      message: 'Olá, assine aqui',
+      refusable: true,
+    };
+    await clickSignAPI.signers.addSignerInDocument(data);
+  }
+```
+
+#### Add a Signer in Document
+
+To add signer in Document in ClickSign.
+
+```typescript
+  const addAginerInDoc = async () => {
+    const data: AddSignerInDocument = {
+      document_key: document.key,
+      signer_key: signerKey,
+      sign_as: 'sign',
+      message: 'Olá, assine aqui',
+      refusable: true,
+    };
+    await clickSignAPI.signers.addSignerInDocument(data);
+  }
+```
+
+#### Remove Signer of Document
+
+To remove a signer of Document in ClickSign.
+
+```typescript
+  const removeSignerofDoc = async () => {
+    const { document } = await clickSignAPI.documents.getDocument(documentKey);
+
+    await clickSignAPI.signers.removeSignerOfDocument(
+      document.signers[0].list_key,
+    );
+  }
+```
+
+## Contribution
 
 Contributions are welcome! If you want to contribute to this project, feel free to open an issue or submit a pull request.
 

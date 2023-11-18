@@ -51,4 +51,16 @@ export class ClickSignSigners {
       this.api.handleErrorResponse(error as AxiosError);
     }
   }
+
+  async removeSignerOfDocument(
+    listKey: string,
+  ): Promise<any> {
+    try {
+      const response: AxiosResponse<any> =
+        await this.api.getApi().delete(`/lists/${listKey}`)
+      return response.data;
+    } catch (error) {
+      this.api.handleErrorResponse(error as AxiosError);
+    }
+  }
 }

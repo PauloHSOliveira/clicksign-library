@@ -19,7 +19,7 @@ const clickSignService = ({
   perMilliseconds,
   retryConfig,
 }: ApiInstanceTypes) => {
-  const api = ClickSignAPI.getInstance({ apiKey, environment });
+  const api = ClickSignAPI.getInstance({ apiKey, environment, debug, maxRequests, perMilliseconds, retryConfig });
   const methods = new ClickSignMethods(api);
   const getClickSignService = new ClickSignService(methods);
 
@@ -35,4 +35,5 @@ export {
   GetDocumentsApiResponse,
   PageInfos,
   ApiInstanceTypes,
+  ClickSignEnvironment
 };

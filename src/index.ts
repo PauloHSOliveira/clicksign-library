@@ -44,3 +44,20 @@ export {
   ApiInstanceTypes,
   ClickSignEnvironment,
 };
+
+// Export envelope types
+export {
+  AddDocumentToEnvelope,
+  AddDocumentToEnvelopeResponse,
+  AddSignerToEnvelope,
+  AddSignerToEnvelopeResponse,
+  CreateEnvelope,
+  CreateEnvelopeResponse,
+  Envelope,
+  EnvelopeDocument,
+  EnvelopeSigner,
+  EnvelopeStatus,
+  GetEnvelopeResponse,
+  ListEnvelopesResponse,
+  UpdateEnvelope,
+} from './types/envelopes';

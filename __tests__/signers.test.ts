@@ -38,7 +38,7 @@ const clickSignAPI = clickSignService({
   debug: true,
   maxRequests: 20,
   perMilliseconds: 4000,
-  retryConfig: { retry: 3 },
+  retryConfig: { retries: 3 },
 });
 
 describe('ClickSign API - Signers', () => {

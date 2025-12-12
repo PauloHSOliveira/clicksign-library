@@ -8,7 +8,8 @@ export default [
     ignores: [
       'dist/**', 
       'node_modules/**', 
-      'rollup.config.js', 
+      'rollup.config*.js', 
+      'rollup.config*.cjs',
       '.eslintrc.js',
       '__tests__/**',
       'setupTests.ts',

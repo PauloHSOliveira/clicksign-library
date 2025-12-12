@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosResponse } from 'axios';
+import { AxiosError, AxiosResponse } from 'axios';
 import { ClickSignAPI } from '../api/ClickSignAPI';
 import { CreateSigner, CreateSignerResponse, GetSignerReponse } from '../types';
 import { format } from 'date-fns';

@@ -33,7 +33,14 @@ export default [{
       },
       output: { quote_style: 1 },
     }),
-    typescript({ tsconfig: './tsconfig.json' }),
+    typescript({ 
+      tsconfig: './tsconfig.json',
+      compilerOptions: {
+        declaration: false,
+        declarationMap: false,
+        declarationDir: undefined,
+      },
+    }),
     commonjs(),
     nodeResolve(),
   ],

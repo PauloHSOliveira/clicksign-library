@@ -116,7 +116,10 @@ export class ClickSignAPI {
     }
 
     if (retryConfig) {
-      axiosRetry(rateLimitedInstance, retryConfig);
+      axiosRetry(rateLimitedInstance, {
+        ...retryConfig,
+        retryDelay: axiosRetry.exponentialDelay,
+      });
     }
 
     rateLimitedInstance.interceptors.response.use(

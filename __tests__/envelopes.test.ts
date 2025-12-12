@@ -56,9 +56,12 @@ describe('ClickSign API - Envelopes (v3)', () => {
       },
     };
 
-    mock.onPost(/\/v3\/envelopes$/).reply(201, mockResponse);
+    mock
+      .onPost('https://sandbox.clicksign.com/v3/envelopes')
+      .reply(201, mockResponse);
 
-    const response = await clickSignAPI.envelopes.createEnvelope(mockDataToSend);
+    const response =
+      await clickSignAPI.envelopes.createEnvelope(mockDataToSend);
 
     envelopeKey = response.envelope.key;
 
@@ -103,7 +106,9 @@ describe('ClickSign API - Envelopes (v3)', () => {
       },
     };
 
-    mock.onGet(/\/v3\/envelopes$/).reply(200, mockResponse);
+    mock
+      .onGet('https://sandbox.clicksign.com/v3/envelopes')
+      .reply(200, mockResponse);
 
     const response = await clickSignAPI.envelopes.listEnvelopes();
 
@@ -144,7 +149,11 @@ describe('ClickSign API - Envelopes (v3)', () => {
       },
     };
 
-    mock.onGet(/\/v3\/envelopes/, { params: { page: 2 } }).reply(200, mockResponse);
+    mock
+      .onGet('https://sandbox.clicksign.com/v3/envelopes', {
+        params: { page: 2 },
+      })
+      .reply(200, mockResponse);
 
     const response = await clickSignAPI.envelopes.listEnvelopes(2);
 
@@ -168,7 +177,9 @@ describe('ClickSign API - Envelopes (v3)', () => {
       },
     };
 
-    mock.onGet(/\/v3\/envelopes\/env_abcdef12345$/).reply(200, mockResponse);
+    mock
+      .onGet('https://sandbox.clicksign.com/v3/envelopes/env_abcdef12345')
+      .reply(200, mockResponse);
 
     if (!envelopeKey) {
       envelopeKey = 'env_abcdef12345';
@@ -205,7 +216,9 @@ describe('ClickSign API - Envelopes (v3)', () => {
       },
     };
 
-    mock.onPatch(/\/v3\/envelopes\/env_abcdef12345$/).reply(200, mockResponse);
+    mock
+      .onPatch('https://sandbox.clicksign.com/v3/envelopes/env_abcdef12345')
+      .reply(200, mockResponse);
 
     if (!envelopeKey) {
       envelopeKey = 'env_abcdef12345';
@@ -237,7 +250,11 @@ describe('ClickSign API - Envelopes (v3)', () => {
       },
     };
 
-    mock.onPatch(/\/v3\/envelopes\/env_abcdef12345\/cancel$/).reply(200, mockResponse);
+    mock
+      .onPatch(
+        'https://sandbox.clicksign.com/v3/envelopes/env_abcdef12345/cancel',
+      )
+      .reply(200, mockResponse);
 
     if (!envelopeKey) {
       envelopeKey = 'env_abcdef12345';
@@ -275,7 +292,9 @@ describe('ClickSign API - Envelopes (v3)', () => {
     };
 
     mock
-      .onPost(/\/v3\/envelopes\/env_abcdef12345\/documents$/)
+      .onPost(
+        'https://sandbox.clicksign.com/v3/envelopes/env_abcdef12345/documents',
+      )
       .reply(201, mockResponse);
 
     if (!envelopeKey) {
@@ -321,7 +340,9 @@ describe('ClickSign API - Envelopes (v3)', () => {
     };
 
     mock
-      .onPost(/\/v3\/envelopes\/env_abcdef12345\/signers$/)
+      .onPost(
+        'https://sandbox.clicksign.com/v3/envelopes/env_abcdef12345/signers',
+      )
       .reply(201, mockResponse);
 
     if (!envelopeKey) {
@@ -339,7 +360,9 @@ describe('ClickSign API - Envelopes (v3)', () => {
   });
 
   test('deleteEnvelope should delete envelope successfully', async () => {
-    mock.onDelete(/\/v3\/envelopes\/env_abcdef12345$/).reply(204);
+    mock
+      .onDelete('https://sandbox.clicksign.com/v3/envelopes/env_abcdef12345')
+      .reply(204);
 
     if (!envelopeKey) {
       envelopeKey = 'env_abcdef12345';

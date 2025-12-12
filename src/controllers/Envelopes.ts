@@ -21,32 +21,28 @@ export class ClickSignEnvelopes {
   }
 
   /**
-   * Gets the API v3 base URL based on environment
+   * Gets the API v3 path for envelopes
+   * Returns a relative path that will be combined with the axios baseURL
    */
-  private getV3Url(): string {
-    const apiInstance = this.api.getApi();
-    const baseURL = apiInstance.defaults.baseURL || '';
-    
-    // Convert v1 URL to v3
-    if (baseURL.includes('sandbox.clicksign.com')) {
-      return baseURL.replace('/api/v1', '/v3');
-    }
-    // Production: https://api.clicksign.com/api/v1 -> https://api.clicksign.com/v3
-    return baseURL.replace('/api/v1', '/v3');
+  private getV3Path(path: string): string {
+    // For API v3, use /v3 prefix instead of /api/v1
+    return `/v3${path}`;
   }
 
   async createEnvelope(data: CreateEnvelope): Promise<CreateEnvelopeResponse> {
     try {
-      const v3Url = this.getV3Url();
+      const url = this.getV3Path('/envelopes');
       const response: AxiosResponse<CreateEnvelopeResponse> = await this.api
         .getApi()
-        .post(`${v3Url}/envelopes`, {
+        .post(url, {
           envelope: {
             name: data.name,
             locale: data.locale || 'pt-BR',
             auto_close: data.auto_close ?? true,
             sequence_enabled: data.sequence_enabled ?? false,
-            ...(data.remind_interval && { remind_interval: data.remind_interval }),
+            ...(data.remind_interval && {
+              remind_interval: data.remind_interval,
+            }),
             ...(data.deadline_at && {
               deadline_at: format(data.deadline_at, "yyyy-MM-dd'T'HH:mm:ssXXX"),
             }),
@@ -60,11 +56,11 @@ export class ClickSignEnvelopes {
 
   async listEnvelopes(page?: number): Promise<ListEnvelopesResponse> {
     try {
-      const v3Url = this.getV3Url();
+      const url = this.getV3Path('/envelopes');
       const params = page ? { page } : {};
       const response: AxiosResponse<ListEnvelopesResponse> = await this.api
         .getApi()
-        .get(`${v3Url}/envelopes`, { params });
+        .get(url, { params });
       return response.data;
     } catch (error) {
       this.api.handleErrorResponse(error as AxiosError);
@@ -73,10 +69,10 @@ export class ClickSignEnvelopes {
 
   async getEnvelope(envelopeKey: string): Promise<GetEnvelopeResponse> {
     try {
-      const v3Url = this.getV3Url();
+      const url = this.getV3Path(`/envelopes/${envelopeKey}`);
       const response: AxiosResponse<GetEnvelopeResponse> = await this.api
         .getApi()
-        .get(`${v3Url}/envelopes/${envelopeKey}`);
+        .get(url);
       return response.data;
     } catch (error) {
       this.api.handleErrorResponse(error as AxiosError);
@@ -88,21 +84,27 @@ export class ClickSignEnvelopes {
     data: UpdateEnvelope,
   ): Promise<GetEnvelopeResponse> {
     try {
-      const v3Url = this.getV3Url();
+      const url = this.getV3Path(`/envelopes/${envelopeKey}`);
       const updateData: any = {};
-      
+
       if (data.name !== undefined) updateData.name = data.name;
       if (data.locale !== undefined) updateData.locale = data.locale;
-      if (data.auto_close !== undefined) updateData.auto_close = data.auto_close;
-      if (data.sequence_enabled !== undefined) updateData.sequence_enabled = data.sequence_enabled;
-      if (data.remind_interval !== undefined) updateData.remind_interval = data.remind_interval;
+      if (data.auto_close !== undefined)
+        updateData.auto_close = data.auto_close;
+      if (data.sequence_enabled !== undefined)
+        updateData.sequence_enabled = data.sequence_enabled;
+      if (data.remind_interval !== undefined)
+        updateData.remind_interval = data.remind_interval;
       if (data.deadline_at !== undefined) {
-        updateData.deadline_at = format(data.deadline_at, "yyyy-MM-dd'T'HH:mm:ssXXX");
+        updateData.deadline_at = format(
+          data.deadline_at,
+          "yyyy-MM-dd'T'HH:mm:ssXXX",
+        );
       }
 
       const response: AxiosResponse<GetEnvelopeResponse> = await this.api
         .getApi()
-        .patch(`${v3Url}/envelopes/${envelopeKey}`, {
+        .patch(url, {
           envelope: updateData,
         });
       return response.data;
@@ -113,10 +115,8 @@ export class ClickSignEnvelopes {
 
   async deleteEnvelope(envelopeKey: string): Promise<void> {
     try {
-      const v3Url = this.getV3Url();
-      await this.api
-        .getApi()
-        .delete(`${v3Url}/envelopes/${envelopeKey}`);
+      const url = this.getV3Path(`/envelopes/${envelopeKey}`);
+      await this.api.getApi().delete(url);
     } catch (error) {
       this.api.handleErrorResponse(error as AxiosError);
     }
@@ -124,10 +124,10 @@ export class ClickSignEnvelopes {
 
   async cancelEnvelope(envelopeKey: string): Promise<GetEnvelopeResponse> {
     try {
-      const v3Url = this.getV3Url();
+      const url = this.getV3Path(`/envelopes/${envelopeKey}/cancel`);
       const response: AxiosResponse<GetEnvelopeResponse> = await this.api
         .getApi()
-        .patch(`${v3Url}/envelopes/${envelopeKey}/cancel`);
+        .patch(url);
       return response.data;
     } catch (error) {
       this.api.handleErrorResponse(error as AxiosError);
@@ -139,15 +139,13 @@ export class ClickSignEnvelopes {
     data: AddDocumentToEnvelope,
   ): Promise<AddDocumentToEnvelopeResponse> {
     try {
-      const v3Url = this.getV3Url();
+      const url = this.getV3Path(`/envelopes/${envelopeKey}/documents`);
       const response: AxiosResponse<AddDocumentToEnvelopeResponse> =
-        await this.api
-          .getApi()
-          .post(`${v3Url}/envelopes/${envelopeKey}/documents`, {
-            document: {
-              document_key: data.document_key,
-            },
-          });
+        await this.api.getApi().post(url, {
+          document: {
+            document_key: data.document_key,
+          },
+        });
       return response.data;
     } catch (error) {
       this.api.handleErrorResponse(error as AxiosError);
@@ -159,18 +157,16 @@ export class ClickSignEnvelopes {
     data: AddSignerToEnvelope,
   ): Promise<AddSignerToEnvelopeResponse> {
     try {
-      const v3Url = this.getV3Url();
+      const url = this.getV3Path(`/envelopes/${envelopeKey}/signers`);
       const response: AxiosResponse<AddSignerToEnvelopeResponse> =
-        await this.api
-          .getApi()
-          .post(`${v3Url}/envelopes/${envelopeKey}/signers`, {
-            signer: {
-              signer_key: data.signer_key,
-              sign_as: data.sign_as,
-              ...(data.group !== undefined && { group: data.group }),
-              ...(data.refusable !== undefined && { refusable: data.refusable }),
-            },
-          });
+        await this.api.getApi().post(url, {
+          signer: {
+            signer_key: data.signer_key,
+            sign_as: data.sign_as,
+            ...(data.group !== undefined && { group: data.group }),
+            ...(data.refusable !== undefined && { refusable: data.refusable }),
+          },
+        });
       return response.data;
     } catch (error) {
       this.api.handleErrorResponse(error as AxiosError);

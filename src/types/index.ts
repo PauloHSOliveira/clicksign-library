@@ -17,4 +17,19 @@ export {
   GetSignerReponse,
   Signer,
 } from './signers';
+export {
+  AddDocumentToEnvelope,
+  AddDocumentToEnvelopeResponse,
+  AddSignerToEnvelope,
+  AddSignerToEnvelopeResponse,
+  CreateEnvelope,
+  CreateEnvelopeResponse,
+  Envelope,
+  EnvelopeDocument,
+  EnvelopeSigner,
+  EnvelopeStatus,
+  GetEnvelopeResponse,
+  ListEnvelopesResponse,
+  UpdateEnvelope,
+} from './envelopes';
 export { ClickSignEnvironment, ClickSignOptions } from './apiInstance';

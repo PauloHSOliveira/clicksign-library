@@ -218,6 +218,173 @@ To remove a signer of Document in ClickSign.
   }
 ```
 
+### Envelopes (API v3)
+
+Envelopes are the new architectural pattern in Clicksign API v3 where documents and signers are grouped together. This provides a more organized way to manage multi-document signing workflows.
+
+#### Create Envelope
+
+Creates a new envelope in ClickSign API v3.
+
+```typescript
+import { CreateEnvelope, EnvelopeStatus } from 'clicksign-library';
+
+const createNewEnvelope = async () => {
+  const data: CreateEnvelope = {
+    name: 'Contrato de Prestação de Serviço',
+    locale: 'pt-BR',
+    auto_close: true,
+    sequence_enabled: false,
+    remind_interval: 7,
+  };
+
+  const response = await clickSignAPI.envelopes.createEnvelope(data);
+  console.log(response.envelope);
+  // Response will include envelope with status 'draft'
+}
+```
+
+#### List Envelopes
+
+List all envelopes with optional pagination.
+
+```typescript
+const listAllEnvelopes = async () => {
+  // List first page
+  const response = await clickSignAPI.envelopes.listEnvelopes();
+  console.log(response.envelopes);
+
+  // List specific page
+  const page2 = await clickSignAPI.envelopes.listEnvelopes(2);
+  console.log(page2.envelopes);
+}
+```
+
+#### Get Envelope Details
+
+Get detailed information about a specific envelope.
+
+```typescript
+const getEnvelopeDetails = async (envelopeKey: string) => {
+  const response = await clickSignAPI.envelopes.getEnvelope(envelopeKey);
+  console.log(response.envelope);
+  // Response includes envelope with all documents and signers
+}
+```
+
+#### Update Envelope
+
+Update envelope properties.
+
+```typescript
+import { UpdateEnvelope } from 'clicksign-library';
+
+const updateEnvelopeInfo = async (envelopeKey: string) => {
+  const data: UpdateEnvelope = {
+    name: 'Updated Contract Name',
+    auto_close: false,
+    remind_interval: 14,
+  };
+
+  const response = await clickSignAPI.envelopes.updateEnvelope(envelopeKey, data);
+  console.log(response.envelope);
+}
+```
+
+#### Cancel Envelope
+
+Cancel an envelope.
+
+```typescript
+const cancelEnvelopeFlow = async (envelopeKey: string) => {
+  const response = await clickSignAPI.envelopes.cancelEnvelope(envelopeKey);
+  console.log(response.envelope.status); // Will be 'canceled'
+}
+```
+
+#### Delete Envelope
+
+Delete an envelope (only allowed for draft envelopes).
+
+```typescript
+const deleteEnvelopeIfDraft = async (envelopeKey: string) => {
+  await clickSignAPI.envelopes.deleteEnvelope(envelopeKey);
+  console.log('Envelope deleted successfully');
+}
+```
+
+#### Add Document to Envelope
+
+Add an existing document to an envelope.
+
+```typescript
+import { AddDocumentToEnvelope } from 'clicksign-library';
+
+const addDocumentToEnvelopeFlow = async (envelopeKey: string, documentKey: string) => {
+  const data: AddDocumentToEnvelope = {
+    document_key: documentKey,
+  };
+
+  const response = await clickSignAPI.envelopes.addDocumentToEnvelope(envelopeKey, data);
+  console.log(response.envelope.documents);
+}
+```
+
+#### Add Signer to Envelope
+
+Add a signer to an envelope.
+
+```typescript
+import { AddSignerToEnvelope } from 'clicksign-library';
+
+const addSignerToEnvelopeFlow = async (envelopeKey: string, signerKey: string) => {
+  const data: AddSignerToEnvelope = {
+    signer_key: signerKey,
+    sign_as: 'sign',
+    refusable: true,
+    group: 1, // Optional: for signature sequence
+  };
+
+  const response = await clickSignAPI.envelopes.addSignerToEnvelope(envelopeKey, data);
+  console.log(response.envelope.signers);
+}
+```
+
+#### Complete Envelope Workflow Example
+
+Here's a complete example of creating an envelope, adding documents and signers:
+
+```typescript
+const completeEnvelopeWorkflow = async () => {
+  // 1. Create envelope
+  const envelope = await clickSignAPI.envelopes.createEnvelope({
+    name: 'Service Contract Package',
+    locale: 'pt-BR',
+    auto_close: true,
+    sequence_enabled: false,
+    remind_interval: 7,
+  });
+
+  console.log('Envelope created:', envelope.envelope.key);
+
+  // 2. Add documents
+  await clickSignAPI.envelopes.addDocumentToEnvelope(envelope.envelope.key, {
+    document_key: 'existing_document_key',
+  });
+
+  // 3. Add signers
+  await clickSignAPI.envelopes.addSignerToEnvelope(envelope.envelope.key, {
+    signer_key: 'existing_signer_key',
+    sign_as: 'sign',
+    refusable: true,
+  });
+
+  // 4. Get complete envelope details
+  const finalEnvelope = await clickSignAPI.envelopes.getEnvelope(envelope.envelope.key);
+  console.log('Complete envelope:', finalEnvelope.envelope);
+}
+```
+
 ## Contribution
 
 Contributions are welcome! If you want to contribute to this project, feel free to open an issue or submit a pull request.

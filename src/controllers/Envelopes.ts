@@ -85,7 +85,7 @@ export class ClickSignEnvelopes {
   ): Promise<GetEnvelopeResponse> {
     try {
       const url = this.getV3Path(`/envelopes/${envelopeKey}`);
-      const updateData: any = {};
+      const updateData: Record<string, string | number | boolean> = {};
 
       if (data.name !== undefined) updateData.name = data.name;
       if (data.locale !== undefined) updateData.locale = data.locale;

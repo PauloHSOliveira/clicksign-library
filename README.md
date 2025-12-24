@@ -231,7 +231,7 @@ import { CreateEnvelope, EnvelopeStatus } from 'clicksign-library';
 
 const createNewEnvelope = async () => {
   const data: CreateEnvelope = {
-    name: 'Contrato de Prestação de Serviço',
+    name: 'Service Agreement Contract',
     locale: 'pt-BR',
     auto_close: true,
     sequence_enabled: false,

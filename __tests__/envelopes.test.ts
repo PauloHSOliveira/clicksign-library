@@ -34,7 +34,7 @@ describe('ClickSign API - Envelopes (v3)', () => {
 
   test('createEnvelope should return 201 status code', async () => {
     const mockDataToSend: CreateEnvelope = {
-      name: 'Contrato de Prestação de Serviço',
+      name: 'Service Agreement Contract',
       locale: 'pt-BR',
       auto_close: true,
       sequence_enabled: false,
@@ -44,7 +44,7 @@ describe('ClickSign API - Envelopes (v3)', () => {
     const mockResponse: CreateEnvelopeResponse = {
       envelope: {
         key: 'env_abcdef12345',
-        name: 'Contrato de Prestação de Serviço',
+        name: 'Service Agreement Contract',
         status: EnvelopeStatus.DRAFT,
         locale: 'pt-BR',
         auto_close: true,
@@ -77,7 +77,7 @@ describe('ClickSign API - Envelopes (v3)', () => {
       envelopes: [
         {
           key: 'env_abcdef12345',
-          name: 'Contrato de Prestação de Serviço',
+          name: 'Service Agreement Contract',
           status: EnvelopeStatus.DRAFT,
           locale: 'pt-BR',
           auto_close: true,
@@ -88,7 +88,7 @@ describe('ClickSign API - Envelopes (v3)', () => {
         },
         {
           key: 'env_xyz789',
-          name: 'Contrato de Compra e Venda',
+          name: 'Purchase and Sale Agreement',
           status: EnvelopeStatus.RUNNING,
           locale: 'pt-BR',
           auto_close: true,
@@ -131,7 +131,7 @@ describe('ClickSign API - Envelopes (v3)', () => {
       envelopes: [
         {
           key: 'env_page2',
-          name: 'Contrato Página 2',
+          name: 'Contract Page 2',
           status: EnvelopeStatus.DRAFT,
           locale: 'pt-BR',
           auto_close: true,
@@ -164,7 +164,7 @@ describe('ClickSign API - Envelopes (v3)', () => {
     const mockResponse: GetEnvelopeResponse = {
       envelope: {
         key: 'env_abcdef12345',
-        name: 'Contrato de Prestação de Serviço',
+        name: 'Service Agreement Contract',
         status: EnvelopeStatus.DRAFT,
         locale: 'pt-BR',
         auto_close: true,
@@ -195,7 +195,7 @@ describe('ClickSign API - Envelopes (v3)', () => {
 
   test('updateEnvelope should return updated envelope', async () => {
     const mockDataToSend: UpdateEnvelope = {
-      name: 'Contrato Atualizado',
+      name: 'Updated Contract',
       auto_close: false,
       remind_interval: 14,
     };
@@ -203,7 +203,7 @@ describe('ClickSign API - Envelopes (v3)', () => {
     const mockResponse: GetEnvelopeResponse = {
       envelope: {
         key: 'env_abcdef12345',
-        name: 'Contrato Atualizado',
+        name: 'Updated Contract',
         status: EnvelopeStatus.DRAFT,
         locale: 'pt-BR',
         auto_close: false,
@@ -229,7 +229,7 @@ describe('ClickSign API - Envelopes (v3)', () => {
       mockDataToSend,
     );
 
-    expect(response.envelope.name).toBe('Contrato Atualizado');
+    expect(response.envelope.name).toBe('Updated Contract');
     expect(response.envelope.auto_close).toBe(false);
     expect(response.envelope.remind_interval).toBe(14);
   });
@@ -238,7 +238,7 @@ describe('ClickSign API - Envelopes (v3)', () => {
     const mockResponse: GetEnvelopeResponse = {
       envelope: {
         key: 'env_abcdef12345',
-        name: 'Contrato de Prestação de Serviço',
+        name: 'Service Agreement Contract',
         status: EnvelopeStatus.CANCELED,
         locale: 'pt-BR',
         auto_close: true,
@@ -273,7 +273,7 @@ describe('ClickSign API - Envelopes (v3)', () => {
     const mockResponse = {
       envelope: {
         key: 'env_abcdef12345',
-        name: 'Contrato de Prestação de Serviço',
+        name: 'Service Agreement Contract',
         status: EnvelopeStatus.DRAFT,
         locale: 'pt-BR',
         auto_close: true,
@@ -282,7 +282,7 @@ describe('ClickSign API - Envelopes (v3)', () => {
         documents: [
           {
             key: 'doc_123456',
-            filename: 'contrato.pdf',
+            filename: 'contract.pdf',
             status: 'pending',
             created_at: '2025-12-12T14:30:00Z',
           },
@@ -320,7 +320,7 @@ describe('ClickSign API - Envelopes (v3)', () => {
     const mockResponse = {
       envelope: {
         key: 'env_abcdef12345',
-        name: 'Contrato de Prestação de Serviço',
+        name: 'Service Agreement Contract',
         status: EnvelopeStatus.DRAFT,
         locale: 'pt-BR',
         auto_close: true,

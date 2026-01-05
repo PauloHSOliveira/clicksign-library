@@ -4,7 +4,7 @@
   "description": "This is a Node.js library to facilitate contract sending using the ClickSign REST API. The library is written in TypeScript and uses functional programming to provide an easy-to-use and scalable interface.",
   "main": "src/index.ts",
   "devDependencies": {
-    "@rollup/plugin-typescript": "^11.1.2",
+    "@rollup/plugin-typescript": "^12.3.0",
     "@types/jest": "^29.5.3",
     "@types/lodash": "^4.14.201",
     "@types/node": "^20.4.5",
